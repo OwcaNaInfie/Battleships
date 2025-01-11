@@ -1,6 +1,0 @@
-@Statki_HostAddress = http://localhost:5129
-
-GET {{Statki_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
