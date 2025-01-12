@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ZespolowyStateCommand.Commands
+namespace Battleships.Models.Commands
 {
     public interface ICommand
     {
