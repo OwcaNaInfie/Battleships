@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Statki.Factory;
-using Statki.Models;
+using Battleships.Models;
+using Battleships.Models.Cells;
+using Battleships.Models.Ships;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -53,7 +54,7 @@ public class ShipController : ControllerBase
         };
 
         var patternedShip = new PatternedShip(ship, request.Pattern);
-        //Zmienia wzór na blocky
+        //Zmienia wzï¿½r na blocky
         patternedShip.ChangeTheme();
 
         return Ok(patternedShip);

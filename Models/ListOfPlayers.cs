@@ -1,26 +1,29 @@
-public class ListOfPlayers
+namespace Battleships.Models
 {
-    private List<Player> players;
-
-    public ListOfPlayers()
+    public class ListOfPlayers
     {
-        players = new List<Player>();
-    }
+        private List<Player> players;
 
-    public void AddPlayer(Player player)
-    {
-        player.playerId = GetNextPlayerId();
-        players.Add(player);
-    }
+        public ListOfPlayers()
+        {
+            players = new List<Player>();
+        }
 
-    public List<Player> GetPlayers()
-    {
-        return players;
-    }
+        public void AddPlayer(Player player)
+        {
+            player.playerId = GetNextPlayerId();
+            players.Add(player);
+        }
 
-    private int GetNextPlayerId()
-    {
-        // Generates the next ID based on the existing players in the list
-        return players.Count == 0 ? 1 : players[players.Count - 1].playerId + 1;
+        public List<Player> GetPlayers()
+        {
+            return players;
+        }
+
+        private int GetNextPlayerId()
+        {
+            // Generates the next ID based on the existing players in the list
+            return players.Count == 0 ? 1 : players[players.Count - 1].playerId + 1;
+        }
     }
 }
