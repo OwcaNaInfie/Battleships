@@ -7,13 +7,13 @@ using Battleships.Models.Commands;
 
 namespace Battleships.Controllers
 {
-    public class Invoker
+    public class CommandManager
     {
         private Stack<ICommand> undoStack;
 
         private Stack<ICommand> redoStack;
 
-        public Invoker()
+        public CommandManager()
         {
             undoStack = new();
             redoStack = new();
