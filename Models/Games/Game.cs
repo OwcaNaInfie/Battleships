@@ -53,25 +53,41 @@ namespace Battleships.Models.Games
             return null; // No winner yet
         }
 
+        // Saves current game state
         public IGameState Save()
         {
-            return null;
+            Console.WriteLine("Current state: " + status + "saved");
+            return new GameState(this.gameId, this.player1, this.player2, this.currentTurn, this.status, this.board1, this.board2);
         }
 
-        public void Restore(IGameState gameState) 
+        // Restores the state
+        public void Restore(IGameState iGameState) 
         {
+            if (iGameState is not GameState gameState )
+            {
+                throw new ArgumentException("Invalid type.");
+            }
 
+            this.gameId = gameState.gameId;
+            this.player1 = gameState.player1;
+            this.player2 = gameState.player2;
+            this.currentTurn = gameState.currentTurn;
+            this.status = gameState.status;
+            this.board1 = gameState.board1;
+            this.board2 = gameState.board2; 
+            Console.WriteLine("State restored:" + this.status);
         }
 
+        // Private memento class
         private class GameState : IGameState
         {
-            private readonly int gameId;
-            private readonly Player player1; 
-            private readonly Player player2;
-            private readonly Player currentTurn; 
-            private readonly string status;
-            private readonly Board board1;
-            private readonly Board board2;
+            public int gameId { get; }
+            public Player player1 { get; }
+            public Player player2 { get; }
+            public Player currentTurn { get; }
+            public string status { get; }
+            public Board board1 { get; }
+            public Board board2 { get; }
 
             public GameState(int gameId, Player player1, Player player2, Player currentTurn, string status, Board board1, Board board2)
             {
@@ -82,11 +98,6 @@ namespace Battleships.Models.Games
                 this.status = status;
                 this.board1 = board1; 
                 this.board2 = board2; 
-            }
-
-            public Game GetGameState() 
-            {
-                return null;
             }
         }    
     }
