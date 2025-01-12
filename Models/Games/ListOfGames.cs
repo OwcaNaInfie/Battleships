@@ -1,0 +1,4 @@
+namespace Battleships.Models.Games
+{
+    
+}
