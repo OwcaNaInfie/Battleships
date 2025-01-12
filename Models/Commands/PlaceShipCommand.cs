@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZespolowyStateCommand.Cells;
+using Battleships.Models.Cells;
 
-namespace ZespolowyStateCommand.Commands
+namespace Battleships.Models.Commands
 {
     public class PlaceShipCommand
     {

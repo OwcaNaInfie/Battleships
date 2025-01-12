@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZespolowyStateCommand.Commands;
+using Statki.Models.Commands;
 
-namespace ZespolowyStateCommand
+namespace Battleships.Controllers
 {
     public class Invoker
     {
