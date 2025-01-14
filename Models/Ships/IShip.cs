@@ -5,11 +5,13 @@ namespace Battleships.Models.Ships
     {
         string Name { get; set; }
         int Size { get; set; }
+        public string Color { get; set; }
+        public string Pattern { get; set; }
 
         List<Cell> Positions { get; set; }
         int Hits { get; set; }
         bool IsSunk();
         void ChangeTheme();
     }
- 
+
 }

@@ -7,74 +7,39 @@ using Battleships.Models.Ships;
 [Route("api/[controller]")]
 public class ShipController : ControllerBase
 {
-    [HttpGet("create/{type}")]
-    public IActionResult CreateShip(string type)
+    [HttpGet("create/player1/{type}")]
+    public IActionResult CreateShipForPlayer1(string type)
     {
         ShipFactory factory = type.ToLower() switch
         {
             "one-mast" => new OneMastFactory(),
             "two-mast" => new TwoMastFactory(),
             "three-mast" => new ThreeMastFactory(),
-           
+
         };
 
         if (factory == null)
             return BadRequest("Nie ma takiego statku");
 
-        var ship = factory.CreateShip();
+        var ship = factory.CreateShip(1);
         return Ok(ship);
     }
-    [HttpPost("theme/color")]
-    public IActionResult ApplyColorTheme([FromBody] ShipWithColor request)
+
+    [HttpGet("create/player2/{type}")]
+    public IActionResult CreateShipForPlayer2(string type)
     {
-        var ship = new Ship
+        ShipFactory factory = type.ToLower() switch
         {
-            Name = request.Name,
-            Size = request.Size,
-            Hits = request.Hits,
-            Positions = request.Positions
+            "one-mast" => new OneMastFactory(),
+            "two-mast" => new TwoMastFactory(),
+            "three-mast" => new ThreeMastFactory(),
+
         };
 
-        var coloredShip = new ColoredShip(ship, request.Color);
-        //Zmienia kolor na niebieski
-       coloredShip.ChangeTheme();
+        if (factory == null)
+            return BadRequest("Nie ma takiego statku");
 
-        return Ok(coloredShip);
+        var ship = factory.CreateShip(2);
+        return Ok(ship);
     }
-
-    [HttpPost("theme/pattern")]
-    public IActionResult ApplyPatternTheme([FromBody] ShipWithPattern request)
-    {
-        var ship = new Ship
-        {
-            Name = request.Name,
-            Size = request.Size,
-            Hits = request.Hits,
-            Positions = request.Positions
-        };
-
-        var patternedShip = new PatternedShip(ship, request.Pattern);
-        //Zmienia wz�r na blocky
-        patternedShip.ChangeTheme();
-
-        return Ok(patternedShip);
-    }
-    public class ShipWithColor
-    {
-        public string Name { get; set; }
-        public int Size { get; set; }
-        public int Hits { get; set; }
-        public List<Cell> Positions { get; set; }
-        public string Color { get; set; }
-    }
-
-    public class ShipWithPattern
-    {
-        public string Name { get; set; }
-        public int Size { get; set; }
-        public int Hits { get; set; }
-        public List<Cell> Positions { get; set; }
-        public string Pattern { get; set; }
-    }
-
 }
