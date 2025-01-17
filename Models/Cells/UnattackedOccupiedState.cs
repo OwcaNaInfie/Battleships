@@ -18,5 +18,9 @@ namespace Battleships.Models.Cells
         {
             Console.WriteLine("A ship is already placed here.");
         }
+        public string ToString()
+        {
+            return "UnattackedOccupiedState";
+        }
     }
 }

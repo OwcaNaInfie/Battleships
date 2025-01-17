@@ -15,6 +15,7 @@ public class ShipController : ControllerBase
             "one-mast" => new OneMastFactory(),
             "two-mast" => new TwoMastFactory(),
             "three-mast" => new ThreeMastFactory(),
+            "four-mast" => new FourMastFactory(),
 
         };
 
@@ -33,6 +34,7 @@ public class ShipController : ControllerBase
             "one-mast" => new OneMastFactory(),
             "two-mast" => new TwoMastFactory(),
             "three-mast" => new ThreeMastFactory(),
+            "four-mast" => new FourMastFactory(),
 
         };
 
@@ -41,5 +43,12 @@ public class ShipController : ControllerBase
 
         var ship = factory.CreateShip(2);
         return Ok(ship);
+    }
+
+    [HttpGet("board")]
+    public IActionResult GetBoard()
+    {
+        var board = new Board();
+        return Ok(board);
     }
 }

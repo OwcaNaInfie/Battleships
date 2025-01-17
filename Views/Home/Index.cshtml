@@ -1,8 +1,87 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var Gracz1 = "Gracz 1";
+    var Gracz2 = "Gracz 2";
+    var Gra = new Battleships.Models.Games.Game(1, Gracz1, Gracz2);
+    Gra.StartGame(); 
+
+    var selectedShipType = "";
 }
 
+<style>
+    .player-name {
+        text-align: center;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+</style>
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="boards-container">
+        <div class="player-name">@Gracz1</div>
+        <table class="board">
+            @for (int i = 0; i < Gra.board1.size; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < Gra.board1.size; j++)
+                    {
+                        var cell = Gra.board1.grid[i][j];
+                        var cellClass = cell.stateName.ToLower();
+                        <td class="@cellClass"></td>
+                    }
+                </tr>
+            }
+        </table>
+        <div class="player-name">@Gracz2</div>
+        <table class="board">
+            @for (int i = 0; i < Gra.board2.size; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < Gra.board2.size; j++)
+                    {
+                        var cell = Gra.board2.grid[i][j];
+                        var cellClass = cell.stateName.ToLower();
+                        <td class="@cellClass"></td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+    <br />
+    <div class="ship-selection">
+        <button onclick="selectShipType('One-Mast')">One-Mast</button>
+        <button onclick="selectShipType('Two-Mast')">Two-Mast</button>
+        <button onclick="selectShipType('Three-Mast')">Three-Mast</button>
+        <button onclick="selectShipType('Four-Mast')">Four-Mast</button>
+        <button onclick="createShip()">Create Ship</button>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        var selectedShipType = "";
+        var currentTurn = "@Gra.currentTurn.name";
+
+        console.log("Current turn: " + currentTurn);
+
+        function selectShipType(shipType) {
+            selectedShipType = shipType;
+            console.log("Selected ship type: " + shipType);
+            console.log("Current turn: " + currentTurn);
+        }
+
+        function createShip() {
+            if (selectedShipType) {
+                console.log("Creating ship of type: " + selectedShipType);
+                console.log("Current turn: " + currentTurn);
+                // Tu factory dac
+                @{Gra.SwitchTurn();};
+                //Nie wiem czemu to nie zmienia tury 
+                currentTurn = "@Gra.currentTurn.name";
+                console.log("Turn switched. Current turn: " + currentTurn);
+            } else {
+                console.log("No ship type selected.");
+            }
+        }
+    </script>
+}

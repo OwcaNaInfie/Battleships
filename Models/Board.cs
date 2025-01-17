@@ -9,18 +9,19 @@ namespace Battleships.Models
 {
     public class Board
     {
-        private List<List<Cell>> grid;
+      
         public int size { get; set; }
+        public List<List<Cell>> grid { get; set; }
 
         public Board(int size = 10)
         {
             this.size = size;
 
-            grid = new();
+            grid = new List<List<Cell>>();
 
             for (int i = 0; i < size; i++)
             {
-                grid[i] = new List<Cell>();
+                grid.Add(new List<Cell>());
 
                 for (int j = 0; j < size; j++)
                 {

@@ -17,5 +17,9 @@ namespace Battleships.Models.Cells
         {
             Console.WriteLine("Ships' locations can only be changed before the game is underway.");
         }
+        public string ToString()
+        {
+            return "HitEmptyState";
+        }
     }
 }
