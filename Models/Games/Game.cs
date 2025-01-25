@@ -4,21 +4,21 @@ namespace Battleships.Models.Games
 {
     public class Game
     {
-        public int gameId { get; set; }
-        public Player player1 { get; set; }
-        public Player player2 { get; set; }
-        public Player currentTurn { get; set; }
+        public int GameId { get; set; }
+        public Player Player1 { get; set; }
+        public Player Player2 { get; set; }
+        public Player CurrentTurn { get; set; }
         public string status { get; set; }
         public Board board1 { get; set; }
         public Board board2 { get; set; }
 
-        public Game(int gameId, string player1Name, string player2Name)
+        public Game(int gameId, string Player1Name, string Player2Name)
         {
-            this.gameId = gameId;
-            this.player1 = new Player(player1Name);
-            this.player2 = new Player(player2Name);
-            this.board1 = player1.board;
-            this.board2 = player2.board;
+            this.GameId = gameId;
+            this.Player1 = new Player(Player1Name);
+            this.Player2 = new Player(Player2Name);
+            this.board1 = Player1.board;
+            this.board2 = Player2.board;
             this.status = "Started";
         }
 
@@ -26,15 +26,15 @@ namespace Battleships.Models.Games
         public void StartGame()
         {
             Random random = new Random();
-            currentTurn = random.Next(0, 2) == 0 ? player1 : player2;
-            status = $"{currentTurn.name}'s turn";
+            CurrentTurn = random.Next(0, 2) == 0 ? Player1 : Player2;
+            status = $"{CurrentTurn.name}'s turn";
         }
 
         // Switches the turn to the other player
         public void SwitchTurn()
         {
-            currentTurn = (currentTurn == player1) ? player2 : player1;
-            status = $"{currentTurn.name}'s turn";
+            CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
+            status = $"{CurrentTurn.name}'s turn";
         }
 
         // Checks if either player has won
@@ -44,11 +44,11 @@ namespace Battleships.Models.Games
 
             // if ()
             // {
-            //     return player2;
+            //     return Player2;
             // }
             // else if ()
             // {
-            //     return player1;
+            //     return Player1;
             // }
             return null; // No winner yet
         }
@@ -57,7 +57,7 @@ namespace Battleships.Models.Games
         public IGameState Save()
         {
             Console.WriteLine("Current state: " + status + "saved");
-            return new GameState(this.gameId, this.player1, this.player2, this.currentTurn, this.status, this.board1, this.board2);
+            return new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.status, this.board1, this.board2);
         }
 
         // Restores the state
@@ -68,10 +68,10 @@ namespace Battleships.Models.Games
                 throw new ArgumentException("Invalid type.");
             }
 
-            this.gameId = gameState.gameId;
-            this.player1 = gameState.player1;
-            this.player2 = gameState.player2;
-            this.currentTurn = gameState.currentTurn;
+            this.GameId = gameState.GameId;
+            this.Player1 = gameState.Player1;
+            this.Player2 = gameState.Player2;
+            this.CurrentTurn = gameState.CurrentTurn;
             this.status = gameState.status;
             this.board1 = gameState.board1;
             this.board2 = gameState.board2; 
@@ -81,20 +81,20 @@ namespace Battleships.Models.Games
         // Private memento class
         private class GameState : IGameState
         {
-            public int gameId { get; }
-            public Player player1 { get; }
-            public Player player2 { get; }
-            public Player currentTurn { get; }
+            public int GameId { get; }
+            public Player Player1 { get; }
+            public Player Player2 { get; }
+            public Player CurrentTurn { get; }
             public string status { get; }
             public Board board1 { get; }
             public Board board2 { get; }
 
-            public GameState(int gameId, Player player1, Player player2, Player currentTurn, string status, Board board1, Board board2)
+            public GameState(int GameId, Player Player1, Player Player2, Player CurrentTurn, string status, Board board1, Board board2)
             {
-                this.gameId = gameId;
-                this.player1 = player1;
-                this.player2 = player2;
-                this.currentTurn = currentTurn;
+                this.GameId = GameId;
+                this.Player1 = Player1;
+                this.Player2 = Player2;
+                this.CurrentTurn = CurrentTurn;
                 this.status = status;
                 this.board1 = board1; 
                 this.board2 = board2; 

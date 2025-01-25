@@ -2,28 +2,28 @@ namespace Battleships.Models
 {
     public class ListOfPlayers
     {
-        private List<Player> players;
+        private List<Player> Players;
 
         public ListOfPlayers()
         {
-            players = new List<Player>();
+            this.Players = new List<Player>();
         }
 
         public void AddPlayer(Player player)
         {
-            player.playerId = GetNextPlayerId();
-            players.Add(player);
+            player.PlayerId = GetNextPlayerId();
+            Players.Add(player);
         }
 
         public List<Player> GetPlayers()
         {
-            return players;
+            return Players;
         }
 
         private int GetNextPlayerId()
         {
             // Generates the next ID based on the existing players in the list
-            return players.Count == 0 ? 1 : players[players.Count - 1].playerId + 1;
+            return Players.Count == 0 ? 1 : Players[Players.Count - 1].PlayerId + 1;
         }
     }
 }

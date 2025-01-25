@@ -10,22 +10,22 @@ namespace Battleships.Models
     public class Board
     {
       
-        public int size { get; set; }
-        public List<List<Cell>> grid { get; set; }
+        public int Size { get; set; }
+        public List<List<Cell>> Grid { get; set; }
 
         public Board(int size = 10)
         {
-            this.size = size;
+            this.Size = size;
 
-            grid = new List<List<Cell>>();
+            Grid = new List<List<Cell>>();
 
             for (int i = 0; i < size; i++)
             {
-                grid.Add(new List<Cell>());
+                Grid.Add(new List<Cell>());
 
                 for (int j = 0; j < size; j++)
                 {
-                    grid[i].Add(new Cell());
+                    Grid[i].Add(new Cell());
                 }
             }
         }

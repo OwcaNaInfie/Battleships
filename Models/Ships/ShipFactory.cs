@@ -10,7 +10,7 @@ namespace Battleships.Models.Ships
         public abstract IShip CreateShip(int playerNumber);
 
         // Słownik przechowujący liczbę utworzonych statków każdego typu
-        private static Dictionary<string, int> shipCounts = new Dictionary<string, int>
+        private static Dictionary<string, int> ShipCounts = new Dictionary<string, int>
         {
             { "One-Mast", 0 },
             { "Two-Mast", 0 },
@@ -19,7 +19,7 @@ namespace Battleships.Models.Ships
         };
 
         // Słownik przechowujący limity statków każdego typu
-        private static Dictionary<string, int> shipLimits = new Dictionary<string, int>
+        private static Dictionary<string, int> ShipLimits = new Dictionary<string, int>
         {
             { "One-Mast", 4 },
             { "Two-Mast", 3 },
@@ -30,13 +30,13 @@ namespace Battleships.Models.Ships
         // Metoda sprawdzająca, czy można utworzyć statek danego typu
         protected bool CanCreateShip(string shipType)
         {
-            return shipCounts[shipType] < shipLimits[shipType];
+            return ShipCounts[shipType] < ShipLimits[shipType];
         }
 
         // Metoda inkrementująca liczbę utworzonych statków danego typu
         protected void IncrementShipCount(string shipType)
         {
-            shipCounts[shipType]++;
+            ShipCounts[shipType]++;
         }
 
         // Metoda dekorująca statek w zależności od numeru gracza
@@ -49,27 +49,27 @@ namespace Battleships.Models.Ships
     // Abstrakcyjna klasa dekoratora statków
     public abstract class ShipDecorator : IShip
     {
-        protected IShip decoratedShip;
+        protected IShip DecoratedShip;
 
         public ShipDecorator(IShip ship)
         {
-            decoratedShip = ship;
+            DecoratedShip = ship;
         }
-        public virtual string Name { get => decoratedShip.Name; set => decoratedShip.Name = value; }
-        public virtual int Size { get => decoratedShip.Size; set => decoratedShip.Size = value; }
-        public virtual string Pattern { get => decoratedShip.Pattern; set => decoratedShip.Pattern = value; }
-        public virtual string Color { get => decoratedShip.Color; set => decoratedShip.Color = value; }
-        public virtual List<Cell> Positions { get => decoratedShip.Positions; set => decoratedShip.Positions = value; }
-        public virtual int Hits { get => decoratedShip.Hits; set => decoratedShip.Hits = value; }
+        public virtual string Name { get => DecoratedShip.Name; set => DecoratedShip.Name = value; }
+        public virtual int Size { get => DecoratedShip.Size; set => DecoratedShip.Size = value; }
+        public virtual string Pattern { get => DecoratedShip.Pattern; set => DecoratedShip.Pattern = value; }
+        public virtual string Color { get => DecoratedShip.Color; set => DecoratedShip.Color = value; }
+        public virtual List<Cell> Positions { get => DecoratedShip.Positions; set => DecoratedShip.Positions = value; }
+        public virtual int Hits { get => DecoratedShip.Hits; set => DecoratedShip.Hits = value; }
 
         public virtual bool IsSunk()
         {
-            return decoratedShip.IsSunk();
+            return DecoratedShip.IsSunk();
         }
 
         public virtual void ChangeTheme()
         {
-            decoratedShip.ChangeTheme();
+            DecoratedShip.ChangeTheme();
         }
     }
 
@@ -78,14 +78,14 @@ namespace Battleships.Models.Ships
     {
         public Player1ShipDecorator(IShip ship) : base(ship)
         {
-            decoratedShip.Pattern = "Blocky";
-            decoratedShip.Color = "Red";
+            DecoratedShip.Pattern = "Blocky";
+            DecoratedShip.Color = "Red";
         }
 
         public override void ChangeTheme()
         {
-            decoratedShip.Pattern = "Round";
-            decoratedShip.Color = "Green";
+            DecoratedShip.Pattern = "Round";
+            DecoratedShip.Color = "Green";
             Console.WriteLine("Theme changed.");
         }
     }
@@ -95,14 +95,14 @@ namespace Battleships.Models.Ships
     {
         public Player2ShipDecorator(IShip ship) : base(ship)
         {
-            decoratedShip.Pattern = "Round";
-            decoratedShip.Color = "Blue";
+            DecoratedShip.Pattern = "Round";
+            DecoratedShip.Color = "Blue";
         }
 
         public override void ChangeTheme()
         {
-            decoratedShip.Pattern = "Blocky";
-            decoratedShip.Color = "Purple";
+            DecoratedShip.Pattern = "Blocky";
+            DecoratedShip.Color = "Purple";
             Console.WriteLine("Theme changed.");
         }
     }

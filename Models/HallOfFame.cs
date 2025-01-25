@@ -5,8 +5,8 @@ namespace Battleship.Models
 {
     public class HallOfFame
     {
-        private static HallOfFame _instance;
-        private static readonly object _lock = new object();
+        private static HallOfFame Instance;
+        private static readonly object Lock = new object();
 
         public List<Statistics> PlayerStatistics { get; private set; }
 
@@ -17,17 +17,17 @@ namespace Battleship.Models
 
         public static HallOfFame GetInstance()
         {
-            if (_instance == null)
+            if (Instance == null)
             {
-                lock (_lock)
+                lock (Lock)
                 {
-                    if (_instance == null)
+                    if (Instance == null)
                     {
-                        _instance = new HallOfFame();
+                        Instance = new HallOfFame();
                     }
                 }
             }
-            return _instance;
+            return Instance;
         }
 
         public List<Statistics> TopThree()
