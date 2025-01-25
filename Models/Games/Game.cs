@@ -27,68 +27,7 @@ namespace Battleships.Models.Games
         public void StartGame()
         {
             Console.WriteLine("Game Started!");
-            Player1TurnToPlaceShips();
-            Player2TurnToPlaceShips();
-        }
-
-        private void Player1TurnToPlaceShips()
-        {
-            Console.WriteLine($"{Player1.Name}, it's your turn to place ships!");
-
-            // Ship placement loop
-            PlaceShip(Player1);
-        }
-
-        private void Player2TurnToPlaceShips()
-        {
-            Console.WriteLine($"{Player2.Name}, it's your turn to place ships!");
-
-            // Ship placement loop
-            PlaceShip(Player2);
-        }
-
-        private void PlaceShip(Player player)
-        {
-            // Define available ship factories
-            List<ShipFactory> factories = new List<ShipFactory>
-            {
-                OneMastFactory.Instance,
-                TwoMastFactory.Instance,
-                ThreeMastFactory.Instance,
-                FourMastFactory.Instance
-            };
-
-            // Loop through available ships (allow player to place ships)
-            foreach (var factory in factories)
-            {
-                while (true)
-                {
-                    Console.WriteLine($"Place your {factory.CreateShip(1).Size}-mast ship.");
-                    Console.WriteLine("Enter the starting row (0 to 9):");
-                    int row = int.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter the starting column (0 to 9):");
-                    int col = int.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter the orientation (H for Horizontal, V for Vertical):");
-                    string orientationInput = Console.ReadLine().ToUpper();
-                    Orientation orientation = orientationInput == "H" ? Orientation.Horizontal : Orientation.Vertical;
-
-                    IShip newShip = factory.CreateShip(player == Player1 ? 1 : 2);
-                    bool shipPlaced = player.Board.PlaceShip(newShip, row, col, orientation);
-
-                    if (shipPlaced)
-                    {
-                        Console.WriteLine($"{player.Name}, your ship has been placed successfully.");
-                        player.Ships.Add(newShip);
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid placement, please try again.");
-                    }
-                }
-            }
+            // Removed the ship placement logic from here
         }
 
         // Switches the turn to the other player
@@ -101,16 +40,7 @@ namespace Battleships.Models.Games
         // Checks if either player has won
         public Player CheckWinner()
         {
-            // implement how to check if a player is a winner 
-
-            // if ()
-            // {
-            //     return Player2;
-            // }
-            // else if ()
-            // {
-            //     return Player1;
-            // }
+            // Implement how to check if a player is a winner 
             return null; // No winner yet
         }
 

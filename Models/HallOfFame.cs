@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Battleship.Models
+namespace Battleships.Models
 {
     public class HallOfFame
     {

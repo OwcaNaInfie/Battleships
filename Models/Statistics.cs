@@ -1,4 +1,4 @@
-namespace Battleship.Models
+namespace Battleships.Models
 {
     public class Statistics
     {

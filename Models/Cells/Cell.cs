@@ -16,9 +16,10 @@ namespace Battleships.Models.Cells
             StateName = State.ToString();
 
         }
-        public Cell(ICellState State)
+
+        public Cell(ICellState state)
         {
-            this.State = State;
+            State = state ?? throw new ArgumentNullException(nameof(state), "State cannot be null");
 
         }
 
