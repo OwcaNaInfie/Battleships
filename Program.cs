@@ -20,8 +20,25 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+        {
+            // Default route configuration
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Add your board-specific route if needed
+            endpoints.MapControllerRoute(
+                name: "board",
+                pattern: "board/{action=Index}/{id?}",
+                defaults: new { controller = "Board", action = "Index" }
+            );
+
+            endpoints.MapControllerRoute(
+                name: "game",
+                pattern: "game/{action=Index}/{id?}",
+                defaults: new { controller = "Game", action = "Index" }
+            );
+        });
 
 app.Run();
