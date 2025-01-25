@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Battleships.Models.Cells;
+using Battleships.Models.Ships;
 
 namespace Battleships.Models
 {
@@ -30,6 +31,43 @@ namespace Battleships.Models
             }
         }
 
-        //public void PlaceShip(Cell cell, Ship ship, Orientation orientation);
+        public bool PlaceShip(IShip ship, int startX, int startY, Orientation orientation)
+        {
+            List<Cell> cells = new List<Cell>();
+
+            for (int i = 0; i < ship.Size; i++)
+            {
+                int x = startX;
+                int y = startY;
+
+                if (orientation == Orientation.Horizontal)
+                    x = startX + i;
+                else if (orientation == Orientation.Vertical)
+                    y = startY + i;
+
+                // Check for valid position
+                if (x >= Size || y >= Size || Grid[x][y].State is UnattackedOccupiedState)
+                {
+                    return false; // Invalid placement
+                }
+
+                cells.Add(Grid[x][y]);
+            }
+
+            // Place the ship on the cells
+            ship.Positions = cells;
+            foreach (var cell in cells)
+            {
+                cell.MarkOccupied();
+            }
+
+            return true;
+        }
+    }
+
+    public enum Orientation
+    {
+        Horizontal,
+        Vertical
     }
 }

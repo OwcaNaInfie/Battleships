@@ -1,3 +1,4 @@
+using Battleships.Models.Ships;
 namespace Battleships.Models
 {
     public class Player
@@ -5,7 +6,7 @@ namespace Battleships.Models
         public int PlayerId { get; set; }
         public String Name { get; set; }
         public Board Board { get; set; }
-        // public List<Ship> ships { get; set; }
+        public List<IShip> Ships { get; set; }
         public bool IsTurn { get; set; }
 
         public Player(string name)
@@ -13,7 +14,7 @@ namespace Battleships.Models
             Name = name;
             // player is given a new Board a ships
             Board = new Board();
-            // this.ships = new List<Ship>();
+            Ships = new List<IShip>();
             IsTurn = false;
         }
         // implementation of placeShip method
