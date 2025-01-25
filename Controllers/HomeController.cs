@@ -6,11 +6,11 @@ namespace Battleships.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<HomeController>Logger;
 
     public HomeController(ILogger<HomeController> logger)
     {
-        _logger = logger;
+       Logger = logger;
     }
 
     public IActionResult Index()

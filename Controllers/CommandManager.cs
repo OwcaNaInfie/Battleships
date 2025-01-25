@@ -9,40 +9,40 @@ namespace Battleships.Controllers
 {
     public class CommandManager
     {
-        private Stack<ICommand> undoStack;
+        private Stack<ICommand> UndoStack;
 
-        private Stack<ICommand> redoStack;
+        private Stack<ICommand> RedoStack;
 
         public CommandManager()
         {
-            undoStack = new();
-            redoStack = new();
+            UndoStack = new();
+            RedoStack = new();
         }
 
         public void ExecuteCommand(ICommand command)
         {
             command.Execute();
-            undoStack.Push(command);
-            redoStack.Clear();
+            UndoStack.Push(command);
+            RedoStack.Clear();
         }
 
         public void Undo() 
         { 
-            if (undoStack.Count > 0) 
+            if (UndoStack.Count > 0) 
             {
-                ICommand command = undoStack.Pop(); 
+                ICommand command = UndoStack.Pop(); 
                 command.Undo();
-                redoStack.Push(command);
+                RedoStack.Push(command);
             }
         }
 
         public void Redo() 
         {
-            if (redoStack.Count > 0) 
+            if (RedoStack.Count > 0) 
             {
-                ICommand command = redoStack.Pop();
+                ICommand command = RedoStack.Pop();
                 command.Execute();
-                undoStack.Push(command);
+                UndoStack.Push(command);
             }
         }
     }

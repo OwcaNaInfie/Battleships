@@ -9,21 +9,21 @@ namespace Battleships.Models.Commands
 {
     public class MarkHitCommand : ICommand
     {
-        private Cell target;
-        private ICellState lastState;
-        public MarkHitCommand(Cell target)
+        private Cell Target;
+        private ICellState LastState;
+        public MarkHitCommand(Cell Target)
         {
-            this.target = target;
-            lastState = target.state;
+            this.Target = Target;
+            LastState = Target.State;
         }
         public void Execute()
         {
-            target.MarkHit();
+            Target.MarkHit();
         }
 
         public void Undo()
         {
-            target.state = lastState;
+            Target.State = LastState;
         }
     }
 }

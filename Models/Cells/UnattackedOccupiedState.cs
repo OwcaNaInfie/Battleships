@@ -11,7 +11,7 @@ namespace Battleships.Models.Cells
         public void MarkHit(Cell context)
         {
             Console.WriteLine("A ship has been hit!");
-            context.state = new HitOccupiedState();
+            context.State = new HitOccupiedState();
         }
 
         public void MarkOccupied(Cell context)

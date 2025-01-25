@@ -8,25 +8,25 @@ namespace Battleships.Models.Cells
 {
     internal class UnattackedEmptyState : ICellState
     {
-        public string stateDescription = "empty";
+        public string StateDescription = "empty";
 
         public void MarkHit(Cell context)
         {
             Console.WriteLine("It's a miss...");
-            context.state = new HitEmptyState();
-            stateDescription = "HitEmptyState";
+            context.State = new HitEmptyState();
+            StateDescription = "HitEmptyState";
         }
 
         public void MarkOccupied(Cell context)
         {
             Console.WriteLine("A ship has been placed.");
-            context.state = new UnattackedOccupiedState();
-            stateDescription = "UnattackedOccupiedState";
+            context.State = new UnattackedOccupiedState();
+            StateDescription = "UnattackedOccupiedState";
         }
 
         public override string ToString()
         {
-            return stateDescription;
+            return StateDescription;
         }
     }
 }

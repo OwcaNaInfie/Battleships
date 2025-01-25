@@ -9,18 +9,18 @@ namespace Battleship.Controllers
     [Route("api/[controller]")]
     public class HallOfFameController : ControllerBase
     {
-        private readonly HallOfFame _hallOfFame;
+        private readonly HallOfFame HallOfFame;
 
         public HallOfFameController()
         {
-            _hallOfFame = HallOfFame.GetInstance();
+            this.HallOfFame = HallOfFame.GetInstance();
         }
 
         // GET: api/HallOfFame/TopThree
         [HttpGet("TopThree")]
         public ActionResult<List<Statistics>> GetTopThreePlayers()
         {
-            var topPlayers = _hallOfFame.TopThree();
+            var topPlayers = HallOfFame.TopThree();
             return Ok(topPlayers);
         }
 
@@ -28,7 +28,7 @@ namespace Battleship.Controllers
         [HttpGet("All")]
         public ActionResult<List<Statistics>> GetAllPlayerStatistics()
         {
-            var allStatistics = _hallOfFame.GetPlayerStatistics();
+            var allStatistics = HallOfFame.GetPlayerStatistics();
             return Ok(allStatistics);
         }
 
@@ -41,7 +41,7 @@ namespace Battleship.Controllers
                 return BadRequest("Invalid player data.");
             }
 
-            _hallOfFame.AddOrUpdatePlayerStatistics(request.PlayerID, request.IsWin);
+            HallOfFame.AddOrUpdatePlayerStatistics(request.PlayerID, request.IsWin);
             return Ok("Player statistics updated successfully.");
         }
     }

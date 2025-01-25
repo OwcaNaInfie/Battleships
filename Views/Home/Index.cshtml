@@ -1,9 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    var Gracz1 = "Gracz 1";
-    var Gracz2 = "Gracz 2";
-    var Gra = new Battleships.Models.Games.Game(1, Gracz1, Gracz2);
-    Gra.StartGame(); 
+    var Player1 = "Gracz 1";
+    var Player2 = "Gracz 2";
+    var Game = new Battleships.Models.Games.Game(1, Player1, Player2);
+    Game.StartGame(); 
 
     var selectedShipType = "";
 }
@@ -18,29 +18,29 @@
 
 <div class="text-center">
     <div class="boards-container">
-        <div class="player-name">@Gracz1</div>
+        <div class="player-name">@Player1</div>
         <table class="board">
-            @for (int i = 0; i < Gra.board1.size; i++)
+            @for (int i = 0; i < Game.Board1.Size; i++)
             {
                 <tr>
-                    @for (int j = 0; j < Gra.board1.size; j++)
+                    @for (int j = 0; j < Game.Board1.Size; j++)
                     {
-                        var cell = Gra.board1.grid[i][j];
-                        var cellClass = cell.stateName.ToLower();
+                        var cell = Game.Board1.Grid[i][j];
+                        var cellClass = cell.StateName.ToLower();
                         <td class="@cellClass"></td>
                     }
                 </tr>
             }
         </table>
-        <div class="player-name">@Gracz2</div>
+        <div class="player-name">@Player2</div>
         <table class="board">
-            @for (int i = 0; i < Gra.board2.size; i++)
+            @for (int i = 0; i < Game.Board2.Size; i++)
             {
                 <tr>
-                    @for (int j = 0; j < Gra.board2.size; j++)
+                    @for (int j = 0; j < Game.Board2.Size; j++)
                     {
-                        var cell = Gra.board2.grid[i][j];
-                        var cellClass = cell.stateName.ToLower();
+                        var cell = Game.Board2.Grid[i][j];
+                        var cellClass = cell.StateName.ToLower();
                         <td class="@cellClass"></td>
                     }
                 </tr>
@@ -60,7 +60,7 @@
 @section Scripts {
     <script>
         var selectedShipType = "";
-        var currentTurn = "@Gra.currentTurn.name";
+        var currentTurn = "@Game.CurrentTurn.Name";
 
         console.log("Current turn: " + currentTurn);
 
@@ -75,9 +75,9 @@
                 console.log("Creating ship of type: " + selectedShipType);
                 console.log("Current turn: " + currentTurn);
                 // Tu factory dac
-                @{Gra.SwitchTurn();};
+                @{Game.SwitchTurn();};
                 //Nie wiem czemu to nie zmienia tury 
-                currentTurn = "@Gra.currentTurn.name";
+                currentTurn = "@Game.CurrentTurn.Name";
                 console.log("Turn switched. Current turn: " + currentTurn);
             } else {
                 console.log("No ship type selected.");

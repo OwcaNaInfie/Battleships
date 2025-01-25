@@ -9,21 +9,21 @@ namespace Battleships.Models.Commands
 {
     public class PlaceShipCommand
     {
-        private Cell target;
-        private ICellState lastState;
-        public PlaceShipCommand(Cell target)
+        private Cell Target;
+        private ICellState LastState;
+        public PlaceShipCommand(Cell Target)
         {
-            this.target = target;
-            lastState = target.state;
+            this.Target = Target;
+            LastState = Target.State;
         }
         public void Execute()
         {
-            target.MarkOccupied();
+            Target.MarkOccupied();
         }
 
         public void Undo()
         {
-            target.state = lastState;
+            Target.State = LastState;
         }
     }
 }

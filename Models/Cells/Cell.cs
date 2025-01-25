@@ -8,33 +8,33 @@ namespace Battleships.Models.Cells
 {
     public class Cell
     {
-        public ICellState state { get; set; }
-        public string stateName { get; set; }
+        public ICellState State { get; set; }
+        public string StateName { get; set; }
         public Cell()
         {
-            state = new UnattackedEmptyState();
-            stateName = state.ToString();
+            State = new UnattackedEmptyState();
+            StateName = State.ToString();
 
         }
-        public Cell(ICellState state)
+        public Cell(ICellState State)
         {
-            this.state = state;
+            this.State = State;
 
         }
 
         public void MarkHit()
         {
-            state.MarkHit(this);
+            State.MarkHit(this);
         }
 
         public void MarkOccupied()
         {
-            state.MarkOccupied(this);
+            State.MarkOccupied(this);
         }
 
         public string GetState()
         {
-            return "State: " + state.ToString();
+            return "State: " + State.ToString();
         }
     }
 }
