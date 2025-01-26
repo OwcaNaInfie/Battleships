@@ -7,13 +7,13 @@ namespace Battleships.Models
     {
         public int Size { get; set; }
         public List<List<Cell>> Grid { get; set; }
-        public List<IShip> Ships { get; set; }  
+        public List<IShip> Ships { get; set; }
 
         // Inicjalizacja planszy
         public Board(int size = 10)
         {
             this.Size = size;
-            Ships = new List<IShip>();  
+            Ships = new List<IShip>();
             Grid = new List<List<Cell>>();
 
             for (int i = 0; i < size; i++)
@@ -28,7 +28,7 @@ namespace Battleships.Models
 
         public Cell? GetCell(int x, int y)
         {
-            if ( !IsInBounds(x,y) )
+            if (!IsInBounds(x, y))
             {
                 return null;
             }
@@ -47,7 +47,7 @@ namespace Battleships.Models
 
 
         // Wizualizacja planszy
-        public void DisplayBoard(bool showShipPlacement = true)
+        public void DisplayBoard(bool showShipPlacement = true, char shipSymbol = '#')
         {
             for (int y = 0; y < Size; y++)
             {
@@ -60,7 +60,7 @@ namespace Battleships.Models
                     switch (cell.State)
                     {
                         case UnattackedOccupiedState:
-                            if (showShipPlacement) { Console.Write(" # "); }
+                            if (showShipPlacement) { Console.Write($" {shipSymbol} "); }
                             else { Console.Write(" . "); }
                             break;
                         case HitOccupiedState:
@@ -74,10 +74,10 @@ namespace Battleships.Models
                             break;
                     }
                 }
-                Console.WriteLine();  
+                Console.WriteLine();
             }
 
-            Console.Write("   "); 
+            Console.Write("   ");
             for (int i = 0; i < Size; i++)
             {
                 Console.Write("---");

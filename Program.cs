@@ -18,8 +18,28 @@ namespace Battleships
             Console.WriteLine("Please enter the name for Player 2:");
             string player2Name = Console.ReadLine();
 
+            // Wybór znaku statków przez graczy
+            char player1ShipSymbol = '#';
+            char player2ShipSymbol = '#';
+
+            if (player1Name.Contains("special"))
+            {
+                Console.WriteLine($"{player1Name}, please choose your ship symbol (default is #):");
+                player1ShipSymbol = Console.ReadKey().KeyChar;
+                if (player1ShipSymbol == '\r') player1ShipSymbol = '#';
+                Console.WriteLine();
+            }
+
+            if (player2Name.Contains("special"))
+            {
+                Console.WriteLine($"{player2Name}, please choose your ship symbol (default is #):");
+                player2ShipSymbol = Console.ReadKey().KeyChar;
+                if (player2ShipSymbol == '\r') player2ShipSymbol = '#';
+                Console.WriteLine();
+            }
+
             // Stworzenie gry i inicjalizacja graczy
-            Game game = new Game(1, player1Name, player2Name);
+            Game game = new Game(1, player1Name, player2Name, player1ShipSymbol, player2ShipSymbol);
 
             game.StartGame();
 
@@ -56,12 +76,13 @@ namespace Battleships
         {
             Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
 
-            player.Board.DisplayBoard();
+            player.Board.DisplayBoard(true, player.ShipSymbol);
 
             PlaceShipForPlayer(game, player, 1, 4); // 4 statki 1-masztowe
             PlaceShipForPlayer(game, player, 2, 3); // 3 statki 2-masztowe
             PlaceShipForPlayer(game, player, 3, 2); // 2 statki 3-masztowe
             PlaceShipForPlayer(game, player, 4, 1); // 1 statek 4-masztowy
+
 
             Console.WriteLine($"{player.Name} has placed all ships.");
         }
@@ -93,7 +114,7 @@ namespace Battleships
                             if (success)
                             {
                                 inputInvalid = false;
-                                if (i > 0) i-=2;
+                                if (i > 0) i -= 2;
                                 CancelShipPlacement(player, shipSize);
                             }
                             else
@@ -120,7 +141,7 @@ namespace Battleships
                     }
 
                 } while (inputInvalid);
-                player.Board.DisplayBoard(true);
+                player.Board.DisplayBoard(true, player.ShipSymbol);
             }
             game.CommandInvoker.ClearHistory();
         }
@@ -137,7 +158,7 @@ namespace Battleships
             };
 
             // Stworzenie statku
-            return shipFactory.CreateShip(player.PlayerId); 
+            return shipFactory.CreateShip(player.PlayerId);
         }
 
         static void CancelShipPlacement(Player player, int shipSize)
@@ -147,7 +168,7 @@ namespace Battleships
                 1 => OneMastFactory.Instance,
                 2 => TwoMastFactory.Instance,
                 3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance, 
+                4 => FourMastFactory.Instance,
                 _ => throw new ArgumentException("Invalid ship size")
             };
             shipFactory.CancelShipPlacement(player.PlayerId);
@@ -166,7 +187,7 @@ namespace Battleships
             Models.Commands.ICommand attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
             bool success = game.CommandInvoker.ExecuteCommand(attack);
 
-            while (!success) 
+            while (!success)
             {
                 Console.WriteLine("Invalid operation. Try again.");
 
@@ -184,7 +205,7 @@ namespace Battleships
         private static void DisplayBoards(Game game)
         {
             Console.WriteLine("Your ships' status:");
-            game.GetCurrentBoard().DisplayBoard(true);
+            game.GetCurrentBoard().DisplayBoard(true, game.CurrentTurn.ShipSymbol);
 
             Console.WriteLine("Attacks status:");
             Board opponentBoard = game.GetOpponentBoard();
@@ -249,8 +270,8 @@ namespace Battleships
             {
                 Console.WriteLine($"Place your {shipSize}-mast ship (Ship {i + 1} of {count}).");
                 Console.WriteLine("Enter the start coordinate (x1 y1): ");
-                
-                int x1, y1, x2 = 0, y2 = 0; 
+
+                int x1, y1, x2 = 0, y2 = 0;
                 string[] startCoord = Console.ReadLine().Split();
                 x1 = int.Parse(startCoord[0]);
                 y1 = int.Parse(startCoord[1]);

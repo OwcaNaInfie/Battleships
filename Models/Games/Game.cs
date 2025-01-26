@@ -16,11 +16,11 @@ namespace Battleships.Models.Games
         public Board Board2 { get; set; }
         public CommandManager CommandInvoker { get; } = new CommandManager();
 
-        public Game(int gameId, string player1Name, string player2Name)
+        public Game(int gameId, string player1Name, string player2Name, char player1ShipSymbol, char player2ShipSymbol)
         {
             GameId = gameId;
-            Player1 = new Player(player1Name);
-            Player2 = new Player(player2Name);
+            Player1 = new Player(player1Name, player1ShipSymbol);
+            Player2 = new Player(player2Name, player2ShipSymbol);
             Board1 = Player1.Board;
             Board2 = Player2.Board;
             CurrentTurn = Player1;
@@ -72,9 +72,9 @@ namespace Battleships.Models.Games
         }
 
         // Zwrócenie stanu aktulnej gry
-        public void Restore(IGameState iGameState) 
+        public void Restore(IGameState iGameState)
         {
-            if (iGameState is not GameState gameState )
+            if (iGameState is not GameState gameState)
             {
                 throw new ArgumentException("Invalid type.");
             }
@@ -85,7 +85,7 @@ namespace Battleships.Models.Games
             this.CurrentTurn = gameState.CurrentTurn;
             this.Status = gameState.Status;
             this.Board1 = gameState.Board1;
-            this.Board2 = gameState.Board2; 
+            this.Board2 = gameState.Board2;
             Console.WriteLine("State restored:" + this.Status);
         }
 
@@ -107,9 +107,9 @@ namespace Battleships.Models.Games
                 Player2 = player2;
                 CurrentTurn = currentTurn;
                 Status = status;
-                Board1 = board1; 
-                Board2 = board2; 
+                Board1 = board1;
+                Board2 = board2;
             }
-        }    
+        }
     }
 }
