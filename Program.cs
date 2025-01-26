@@ -69,7 +69,6 @@ namespace Battleships
         {
             for (int i = 0; i < count; i++)
             {
-                Console.WriteLine(i);
                 Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
                 string? input;
                 bool inputInvalid = true;
