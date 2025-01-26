@@ -25,6 +25,25 @@ namespace Battleships.Models
             }
         }
 
+        public Cell? GetCell(int x, int y)
+        {
+            if ( !IsInBounds(x,y) )
+            {
+                return null;
+            }
+
+            return Grid[x][y];
+        }
+
+        public bool IsInBounds(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= Size || y >= Size)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public bool PlaceShip(IShip ship, int startX, int startY, int endX, int endY)
         {
             // Ensure the ship is within bounds

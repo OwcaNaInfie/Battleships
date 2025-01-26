@@ -8,9 +8,10 @@ namespace Battleships.Models.Cells
 {
     internal class HitOccupiedState : ICellState
     {
-        public void MarkHit(Cell context)
+        public bool MarkHit(Cell context)
         {
             Console.WriteLine("This cell has already been attacked.");
+            return false;
         }
 
         public void MarkOccupied(Cell context)

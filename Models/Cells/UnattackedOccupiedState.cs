@@ -8,15 +8,16 @@ namespace Battleships.Models.Cells
 {
     internal class UnattackedOccupiedState : ICellState
     {
-        public void MarkHit(Cell context)
+        public bool MarkHit(Cell context)
         {
             Console.WriteLine("A ship has been hit!");
             context.State = new HitOccupiedState();
+            return true;
         }
 
         public void MarkOccupied(Cell context)
         {
-            Console.WriteLine("A ship is already placed here.");
+            Console.WriteLine("A ship has already been placed here.");
         }
         public string ToString()
         {

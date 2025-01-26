@@ -8,13 +8,14 @@ namespace Battleships.Models.Cells
 {
     internal class UnattackedEmptyState : ICellState
     {
-        public string StateDescription = "empty";
+        public string StateDescription = "UnattackedEmptyState";
 
-        public void MarkHit(Cell context)
+        public bool MarkHit(Cell context)
         {
             Console.WriteLine("It's a miss...");
             context.State = new HitEmptyState();
             StateDescription = "HitEmptyState";
+            return true;
         }
 
         public void MarkOccupied(Cell context)

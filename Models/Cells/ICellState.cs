@@ -8,7 +8,7 @@ namespace Battleships.Models.Cells
 {
     public interface ICellState
     {
-        public void MarkHit(Cell context);
+        public bool MarkHit(Cell context);
         public void MarkOccupied(Cell context);
     }
 }

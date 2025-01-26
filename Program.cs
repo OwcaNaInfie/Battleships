@@ -2,6 +2,8 @@
 using Battleships.Models;
 using Battleships.Models.Ships;
 using Battleships.Models.Games;
+using System.Windows.Input;
+using Battleships.Models.Commands;
 
 namespace Battleships
 {
@@ -31,8 +33,8 @@ namespace Battleships
             while (game.CheckWinner() == null)
             {
                 Console.WriteLine(game.Status);
-                // Implement gameplay loop here
-                Attack();
+                DisplayBoards(game);
+                Attack(game);
                 game.SwitchTurn();
             }
 
@@ -47,6 +49,7 @@ namespace Battleships
                 Console.WriteLine("Game over without a winner.");
             }
         }
+
 
         static void PlaceShips(Player player)
         {
@@ -103,7 +106,7 @@ namespace Battleships
                         }
                     }
 
-                    player.Board.DisplayBoard(); // Show the updated board after placing this ship
+                    player.Board.DisplayBoard(true); // Show the updated board after placing this ship
                 }
             }
         }
@@ -124,9 +127,51 @@ namespace Battleships
             return shipFactory.CreateShip(player.PlayerId); // Create the ship through the factory
         }
 
-        static void Attack()
+        static void Attack(Game game)
         {
+            Console.WriteLine("Which cell would you like to attack?");
 
+            Console.WriteLine("Enter x, y coordinates:");
+            string[] attackCoord = Console.ReadLine().Split();
+            int x = int.Parse(attackCoord[0]);
+            int y = int.Parse(attackCoord[1]);
+
+            Models.Commands.ICommand attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
+            bool success = game.CommandInvoker.ExecuteCommand(attack);
+
+            while (!success) 
+            {
+                Console.WriteLine("Invalid operation. Try again.");
+
+                Console.WriteLine("Enter x, y coordinates:");
+                attackCoord = Console.ReadLine().Split();
+                x = int.Parse(attackCoord[0]);
+                y = int.Parse(attackCoord[1]);
+
+                attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
+                success = game.CommandInvoker.ExecuteCommand(attack);
+            }
+
+        }
+
+        public static void PromptForCoordinates()
+        {
+            Console.WriteLine("Enter x, y coordinates:");
+
+            string[] attackCoord = Console.ReadLine().Split();
+            int x = int.Parse(attackCoord[0]);
+            int y = int.Parse(attackCoord[1]);
+
+        }
+
+        private static void DisplayBoards(Game game)
+        {
+            Console.WriteLine("Your ships' status:");
+            game.GetCurrentBoard().DisplayBoard(true);
+
+            Console.WriteLine("Attacks status:");
+            Board opponentBoard = game.GetOpponentBoard();
+            opponentBoard.DisplayBoard(false);
         }
     }
 }

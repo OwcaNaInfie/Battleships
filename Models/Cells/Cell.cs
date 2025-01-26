@@ -9,23 +9,23 @@ namespace Battleships.Models.Cells
     public class Cell
     {
         public ICellState State { get; set; }
-        public string StateName { get; set; }
+        //public string StateName { get; set; }
         public Cell()
         {
             State = new UnattackedEmptyState();
-            StateName = State.ToString();
+            //StateName = State.ToString();
 
         }
 
         public Cell(ICellState state)
         {
             State = state ?? throw new ArgumentNullException(nameof(state), "State cannot be null");
-
+            //StateName = State.ToString();
         }
 
-        public void MarkHit()
+        public bool MarkHit()
         {
-            State.MarkHit(this);
+            return State.MarkHit(this);
         }
 
         public void MarkOccupied()
