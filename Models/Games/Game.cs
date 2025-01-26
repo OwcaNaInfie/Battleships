@@ -1,3 +1,4 @@
+using Battleships.Controllers;
 using Battleships.Models;
 using Battleships.Models.Ships;
 
@@ -10,8 +11,9 @@ namespace Battleships.Models.Games
         public Player Player2 { get; set; }
         public Player CurrentTurn { get; set; }
         public string Status { get; set; }
-        public Board Board1 { get; set; }
-        public Board Board2 { get; set; }
+        public Board Board1; //{ get; set; }
+        public Board Board2; //{ get; set; }
+        public CommandManager CommandInvoker { get; } = new CommandManager();
 
         public Game(int gameId, string player1Name, string player2Name)
         {
@@ -20,6 +22,7 @@ namespace Battleships.Models.Games
             Player2 = new Player(player2Name);
             Board1 = Player1.Board;
             Board2 = Player2.Board;
+            CurrentTurn = Player1;
             Status = "Started";
         }
 
@@ -35,6 +38,16 @@ namespace Battleships.Models.Games
         {
             CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
             Status = $"{CurrentTurn.Name}'s turn";
+        }
+
+        public Board GetOpponentBoard()
+        {
+            return (CurrentTurn == Player1) ? Player2.Board : Player1.Board;
+        }
+
+        public Board GetCurrentBoard()
+        {
+            return (CurrentTurn == Player1) ? Player1.Board : Player2.Board;
         }
 
         // Checks if either player has won

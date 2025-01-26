@@ -9,21 +9,38 @@ namespace Battleships.Models.Commands
 {
     public class MarkHitCommand : ICommand
     {
-        private Cell Target;
-        private ICellState LastState;
-        public MarkHitCommand(Cell Target)
+        private Board TargetBoard { get; set; }
+        private ICellState? LastState { get; set; }
+        private Cell? TargetCell { get; set; }
+        public MarkHitCommand(Board board, int x, int y)
         {
-            this.Target = Target;
-            LastState = Target.State;
+            TargetBoard = board;
+            TargetCell = TargetBoard.GetCell(x, y);
+
+            if (TargetCell != null)
+            {
+                LastState = TargetCell.State;
+            }
+            else
+            {
+                Console.WriteLine("These coordinates are not on the board.");
+            }
         }
-        public void Execute()
+        public bool Execute()
         {
-            Target.MarkHit();
+            if (TargetCell != null)
+            {
+                return TargetCell.MarkHit();
+            }
+            return false;
         }
 
         public void Undo()
         {
-            Target.State = LastState;
+            if (TargetCell != null)
+            {
+                TargetCell.State = LastState;
+            }
         }
     }
 }

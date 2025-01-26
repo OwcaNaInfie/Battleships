@@ -8,7 +8,7 @@ namespace Battleships.Models.Commands
 {
     public interface ICommand
     {
-        public void Execute();
+        public bool Execute();
         public void Undo();
     }
 }
