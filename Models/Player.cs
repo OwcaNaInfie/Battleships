@@ -16,9 +16,15 @@ namespace Battleships.Models
             Board = new Board();
             Ships = new List<IShip>();
             IsTurn = false;
+            PlayerId = PlayerIdGenerator.GetNewId();
         }
         // implementation of placeShip method
 
         // implementation of makeMove method
+    }
+
+    public static class PlayerIdGenerator {
+        private static int Counter {  get; set; }
+        public static int GetNewId() { Counter++; return Counter; }
     }
 }

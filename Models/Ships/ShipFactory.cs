@@ -9,14 +9,7 @@ namespace Battleships.Models.Ships
         // Abstrakcyjna metoda do tworzenia statku
         public abstract IShip CreateShip(int playerNumber);
 
-        // Słownik przechowujący liczbę utworzonych statków każdego typu
-        private static Dictionary<string, int> ShipCounts = new Dictionary<string, int>
-        {
-            { "One-Mast", 0 },
-            { "Two-Mast", 0 },
-            { "Three-Mast", 0 },
-            { "Four-Mast", 0 }
-        };
+        private static Dictionary<int, Dictionary<string, int>> PlayerShipCounts = new();
 
         // Słownik przechowujący limity statków każdego typu
         private static Dictionary<string, int> ShipLimits = new Dictionary<string, int>
@@ -28,15 +21,28 @@ namespace Battleships.Models.Ships
         };
 
         // Metoda sprawdzająca, czy można utworzyć statek danego typu
-        protected bool CanCreateShip(string shipType)
+        protected bool CanCreateShip(string shipType, int playerId)
         {
-            return ShipCounts[shipType] < ShipLimits[shipType];
+            if (!PlayerShipCounts.ContainsKey(playerId))
+            {
+                Dictionary<string, int> newPlayerDictionary = new Dictionary<string, int>
+                {
+                    { "One-Mast", 0 },
+                    { "Two-Mast", 0 },
+                    { "Three-Mast", 0 },
+                    { "Four-Mast", 0 }
+                };
+
+                PlayerShipCounts.Add(playerId, newPlayerDictionary);
+            }
+
+            return PlayerShipCounts[playerId][shipType] < ShipLimits[shipType];
         }
 
         // Metoda inkrementująca liczbę utworzonych statków danego typu
-        protected void IncrementShipCount(string shipType)
+        protected void IncrementShipCount(string shipType, int playerId)
         {
-            ShipCounts[shipType]++;
+            PlayerShipCounts[playerId][shipType]++;
         }
 
         // Metoda dekorująca statek w zależności od numeru gracza
@@ -117,9 +123,9 @@ namespace Battleships.Models.Ships
 
         public override IShip CreateShip(int playerNumber)
         {
-            if (!CanCreateShip("One-Mast"))
+            if (!CanCreateShip("One-Mast", playerNumber))
                 throw new InvalidOperationException("Nie można stworzyć wiekszej ilości jednomasztowców.");
-            IncrementShipCount("One-Mast");
+            IncrementShipCount("One-Mast", playerNumber);
             IShip ship = new Ship { Name = "One-Mast", Size = 1 };
             return DecorateShip(ship, playerNumber);
         }
@@ -135,9 +141,9 @@ namespace Battleships.Models.Ships
 
         public override IShip CreateShip(int playerNumber)
         {
-            if (!CanCreateShip("Two-Mast"))
+            if (!CanCreateShip("Two-Mast", playerNumber))
                 throw new InvalidOperationException("Nie można stworzyć wiekszej ilości dwumasztowców.");
-            IncrementShipCount("Two-Mast");
+            IncrementShipCount("Two-Mast" , playerNumber);
             IShip ship = new Ship { Name = "Two-Mast", Size = 2 };
             return DecorateShip(ship, playerNumber);
         }
@@ -153,9 +159,9 @@ namespace Battleships.Models.Ships
 
         public override IShip CreateShip(int playerNumber)
         {
-            if (!CanCreateShip("Three-Mast"))
+            if (!CanCreateShip("Three-Mast" , playerNumber))
                 throw new InvalidOperationException("Nie można stworzyć wiekszej ilości trójmasztowców.");
-            IncrementShipCount("Three-Mast");
+            IncrementShipCount("Three-Mast", playerNumber);
             IShip ship = new Ship { Name = "Three-Mast", Size = 3 };
             return DecorateShip(ship, playerNumber);
         }
@@ -171,9 +177,9 @@ namespace Battleships.Models.Ships
 
         public override IShip CreateShip(int playerNumber)
         {
-            if (!CanCreateShip("Four-Mast"))
+            if (!CanCreateShip("Four-Mast", playerNumber))
                 throw new InvalidOperationException("Nie można stworzyć wiekszej ilości czteromasztowców.");
-            IncrementShipCount("Four-Mast");
+            IncrementShipCount("Four-Mast", playerNumber);
             IShip ship = new Ship { Name = "Four-Mast", Size = 4 };
             return DecorateShip(ship, playerNumber);
         }

@@ -32,6 +32,7 @@ namespace Battleships
             {
                 Console.WriteLine(game.Status);
                 // Implement gameplay loop here
+                Attack();
                 game.SwitchTurn();
             }
 
@@ -121,6 +122,11 @@ namespace Battleships
             };
 
             return shipFactory.CreateShip(player.PlayerId); // Create the ship through the factory
+        }
+
+        static void Attack()
+        {
+
         }
     }
 }
