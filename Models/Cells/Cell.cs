@@ -33,6 +33,11 @@ namespace Battleships.Models.Cells
             State.MarkOccupied(this);
         }
 
+        public void MarkUnattackedEmpty()
+        {
+            State = new UnattackedEmptyState();
+        }
+
         public string GetState()
         {
             return "State: " + State.ToString();

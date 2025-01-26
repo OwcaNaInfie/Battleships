@@ -90,7 +90,29 @@ namespace Battleships.Models.Commands
 
         public void Undo()
         {
-            
+            // Loop through the cells the ship occupies based on start and end coordinates
+            for (int i = 0; i < Ship.Size; i++)
+            {
+                int x = StartX;
+                int y = StartY;
+
+                // Determine if we are going horizontally or vertically
+                if (StartX == EndX)
+                {
+                    y += i; // Vertical placement
+                }
+                else
+                {
+                    x += i; // Horizontal placement
+                }
+
+                var cell = Board.GetCell(x, y);
+                // Mark the cell as empty
+                cell.MarkUnattackedEmpty();
+            }
+
+            // Remove the ship from the board's ship list
+            Board.Ships.Remove(Ship);
         }
     }
 }

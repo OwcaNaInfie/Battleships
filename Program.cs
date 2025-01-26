@@ -4,6 +4,7 @@ using Battleships.Models.Ships;
 using Battleships.Models.Games;
 using System.Windows.Input;
 using Battleships.Models.Commands;
+using System.Numerics;
 
 namespace Battleships
 {
@@ -68,51 +69,60 @@ namespace Battleships
         {
             for (int i = 0; i < count; i++)
             {
-                bool isPlaced = false;  // Renaming 'placed' to 'isPlaced' to avoid scope conflict
-                while (!isPlaced)
+                Console.WriteLine(i);
+                Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
+                string? input;
+                bool inputInvalid = true;
+                bool success;
+
+                do
                 {
-                    Console.WriteLine($"Place your {shipSize}-mast ship (Ship {i + 1} of {count}).");
-                    Console.WriteLine("Enter the start coordinate (x1 y1): ");
-                    int x1, y1, x2, y2;
-                    string[] startCoord = Console.ReadLine().Split();
-                    x1 = int.Parse(startCoord[0]);
-                    y1 = int.Parse(startCoord[1]);
-
-                    Console.WriteLine("Enter the end coordinate (x2 y2): ");
-                    string[] endCoord = Console.ReadLine().Split();
-                    x2 = int.Parse(endCoord[0]);
-                    y2 = int.Parse(endCoord[1]);
-
-                    // Calculate the length of the ship
-                    int length = (x1 == x2) ? Math.Abs(y2 - y1) + 1 : (y1 == y2) ? Math.Abs(x2 - x1) + 1 : 0;
-
-                    if (length != shipSize)
+                    input = Console.ReadLine();
+                    switch (input)
                     {
-                        Console.WriteLine($"The length of the ship doesn't match the required size. The ship size is {shipSize}.");
+                        case "P" or "p":
+                            success = PlaceShip(shipSize, count, i, player, game);
+                            if (success)
+                            {
+                                inputInvalid = false;
+                            }
+                            break;
+                        case "U" or "u":
+                            success = game.CommandInvoker.Undo();
+                            if (success)
+                            {
+                                inputInvalid = false;
+                                if (i > 0) i-=2;
+                                CancelShipPlacement(player, shipSize);
+                            }
+                            else
+                            {
+                                Console.WriteLine("No moves to undo.");
+                            }
+                            break;
+                        case "R" or "r":
+                            success = game.CommandInvoker.Redo();
+                            if (success)
+                            {
+                                inputInvalid = false;
+                            }
+                            else
+                            {
+                                Console.WriteLine("No moves to redo.");
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Invalid input. Try again.");
+                            inputInvalid = true;
+                            break;
+
                     }
-                    else
-                    {
-                        // Create the ship (no need for orientation anymore)
-                        IShip ship = CreateShip(player, shipSize);
 
-                        // Place the ship using start and end coordinates
-                        //isPlaced = player.Board.PlaceShip(ship, x1, y1, x2, y2);
-                        Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
-                        isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
-
-                        if (!isPlaced)
-                        {
-                            Console.WriteLine("Invalid placement. The ship cannot be placed here.");
-                            CancelShipPlacement(player, shipSize);
-                        }
-                    }
-
-                    player.Board.DisplayBoard(true); // Show the updated board after placing this ship
-                }
+                } while (inputInvalid);
+                player.Board.DisplayBoard(true);
             }
+            game.CommandInvoker.ClearHistory();
         }
-
-
 
         static IShip CreateShip(Player player, int shipSize)
         {
@@ -226,6 +236,53 @@ namespace Battleships
             } while (inputInvalid);
 
             game.SwitchTurn();
+        }
+
+        private static bool PlaceShip(int shipSize, int count, int i, Player player, Game game)
+        {
+            bool isPlaced = false;  // Renaming 'placed' to 'isPlaced' to avoid scope conflict
+            while (!isPlaced)
+            {
+                Console.WriteLine($"Place your {shipSize}-mast ship (Ship {i + 1} of {count}).");
+                Console.WriteLine("Enter the start coordinate (x1 y1): ");
+                int x1, y1, x2, y2;
+                string[] startCoord = Console.ReadLine().Split();
+                x1 = int.Parse(startCoord[0]);
+                y1 = int.Parse(startCoord[1]);
+
+                Console.WriteLine("Enter the end coordinate (x2 y2): ");
+                string[] endCoord = Console.ReadLine().Split();
+                x2 = int.Parse(endCoord[0]);
+                y2 = int.Parse(endCoord[1]);
+
+                // Calculate the length of the ship
+                int length = (x1 == x2) ? Math.Abs(y2 - y1) + 1 : (y1 == y2) ? Math.Abs(x2 - x1) + 1 : 0;
+
+                if (length != shipSize)
+                {
+                    Console.WriteLine($"The length of the ship doesn't match the required size. The ship size is {shipSize}.");
+                    return false;
+                }
+                else
+                {
+                    // Create the ship (no need for orientation anymore)
+                    IShip ship = CreateShip(player, shipSize);
+
+                    // Place the ship using start and end coordinates
+                    //isPlaced = player.Board.PlaceShip(ship, x1, y1, x2, y2);
+                    Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
+                    isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
+
+                    if (!isPlaced)
+                    {
+                        Console.WriteLine("Invalid placement. The ship cannot be placed here.");
+                        CancelShipPlacement(player, shipSize);
+                        return false;
+                    }
+                }
+
+            }
+            return true;
         }
     }
 }

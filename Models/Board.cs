@@ -44,68 +44,6 @@ namespace Battleships.Models
             return true;
         }
 
-        public bool PlaceShip(IShip ship, int startX, int startY, int endX, int endY)
-        {
-            // Ensure the ship is within bounds
-            if (startX < 0 || startX >= Size || startY < 0 || startY >= Size || endX < 0 || endX >= Size || endY < 0 || endY >= Size)
-            {
-                return false;
-            }
-
-            // Calculate the length of the ship based on the coordinates
-            int length = 0;
-            if (startX == endX)
-            {
-                // Vertical ship placement
-                length = Math.Abs(endY - startY) + 1;
-            }
-            else if (startY == endY)
-            {
-                // Horizontal ship placement
-                length = Math.Abs(endX - startX) + 1;
-            }
-
-            // Check if the length matches the ship size
-            if (length != ship.Size)
-            {
-                Console.WriteLine($"The length of the ship doesn't match the required size. The ship size is {ship.Size}.");
-                return false;
-            }
-
-            // Loop through the cells the ship occupies based on start and end coordinates
-            for (int i = 0; i < ship.Size; i++)
-            {
-                int x = startX;
-                int y = startY;
-
-                // Determine if we are going horizontally or vertically
-                if (startX == endX)
-                {
-                    y += i; // Vertical placement
-                }
-                else
-                {
-                    x += i; // Horizontal placement
-                }
-
-                // Check if the cell is already occupied
-                var cell = Grid[x][y];
-                if (cell.State is UnattackedOccupiedState)
-                {
-                    Console.WriteLine($"Error: Cell at ({x},{y}) is already occupied.");
-                    return false; // Invalid placement if the cell is occupied
-                }
-
-                // Mark the cell as occupied by the ship
-                cell.State = new UnattackedOccupiedState();
-            }
-
-            // Add the ship to the list after placement
-            Ships.Add(ship);
-            return true;
-        }
-
-
 
         // Add the DisplayBoard method to visualize the board (as you already have)
         public void DisplayBoard(bool showShipPlacement = true)
