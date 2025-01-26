@@ -8,6 +8,7 @@ namespace Battleships.Models.Ships
     {
         // Abstrakcyjna metoda do tworzenia statku
         public abstract IShip CreateShip(int playerNumber);
+        public abstract void CancelShipPlacement(int playerNumber);
 
         private static Dictionary<int, Dictionary<string, int>> PlayerShipCounts = new();
 
@@ -43,6 +44,14 @@ namespace Battleships.Models.Ships
         protected void IncrementShipCount(string shipType, int playerId)
         {
             PlayerShipCounts[playerId][shipType]++;
+        }
+
+        protected void DecrementShipCount(string shipType, int playerId)
+        {
+            if (PlayerShipCounts[playerId][shipType] > 0)
+            {
+                PlayerShipCounts[playerId][shipType]--;
+            }
         }
 
         // Metoda dekorująca statek w zależności od numeru gracza
@@ -129,6 +138,11 @@ namespace Battleships.Models.Ships
             IShip ship = new Ship { Name = "One-Mast", Size = 1 };
             return DecorateShip(ship, playerNumber);
         }
+
+        public override void CancelShipPlacement(int playerNumber)
+        {
+            DecrementShipCount("One-Mast", playerNumber);
+        }
     }
 
     // Fabryka statków dwumasztowych
@@ -146,6 +160,10 @@ namespace Battleships.Models.Ships
             IncrementShipCount("Two-Mast" , playerNumber);
             IShip ship = new Ship { Name = "Two-Mast", Size = 2 };
             return DecorateShip(ship, playerNumber);
+        }
+        public override void CancelShipPlacement(int playerNumber)
+        {
+            DecrementShipCount("Two-Mast", playerNumber);
         }
     }
 
@@ -165,6 +183,10 @@ namespace Battleships.Models.Ships
             IShip ship = new Ship { Name = "Three-Mast", Size = 3 };
             return DecorateShip(ship, playerNumber);
         }
+        public override void CancelShipPlacement(int playerNumber)
+        {
+            DecrementShipCount("Three-Mast", playerNumber);
+        }
     }
 
     // Fabryka statków czteromasztowych
@@ -182,6 +204,11 @@ namespace Battleships.Models.Ships
             IncrementShipCount("Four-Mast", playerNumber);
             IShip ship = new Ship { Name = "Four-Mast", Size = 4 };
             return DecorateShip(ship, playerNumber);
+        }
+
+        public override void CancelShipPlacement(int playerNumber)
+        {
+            DecrementShipCount("Four-Mast", playerNumber);
         }
     }
 

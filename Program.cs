@@ -24,8 +24,8 @@ namespace Battleships
             game.StartGame();
 
             // Let each player place their ships
-            PlaceShips(game.Player1);
-            PlaceShips(game.Player2);
+            PlaceShips(game.Player1, game);
+            PlaceShips(game.Player2, game);
 
             game.CommandInvoker.ClearHistory();
 
@@ -49,22 +49,22 @@ namespace Battleships
             }
         }
 
-        static void PlaceShips(Player player)
+        static void PlaceShips(Player player, Game game)
         {
             Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
 
             player.Board.DisplayBoard();
 
             // Corrected number of ships
-            PlaceShipForPlayer(player, 1, 4); // 4 ships of size 1-mast
-            PlaceShipForPlayer(player, 2, 3); // 3 ships of size 2-mast
-            PlaceShipForPlayer(player, 3, 2); // 2 ships of size 3-mast
-            PlaceShipForPlayer(player, 4, 1); // 1 ship of size 4-mast
+            PlaceShipForPlayer(game, player, 1, 4); // 4 ships of size 1-mast
+            PlaceShipForPlayer(game, player, 2, 3); // 3 ships of size 2-mast
+            PlaceShipForPlayer(game, player, 3, 2); // 2 ships of size 3-mast
+            PlaceShipForPlayer(game, player, 4, 1); // 1 ship of size 4-mast
 
             Console.WriteLine($"{player.Name} has placed all ships.");
         }
 
-        static void PlaceShipForPlayer(Player player, int shipSize, int count)
+        static void PlaceShipForPlayer(Game game, Player player, int shipSize, int count)
         {
             for (int i = 0; i < count; i++)
             {
@@ -96,11 +96,14 @@ namespace Battleships
                         IShip ship = CreateShip(player, shipSize);
 
                         // Place the ship using start and end coordinates
-                        isPlaced = player.Board.PlaceShip(ship, x1, y1, x2, y2);
+                        //isPlaced = player.Board.PlaceShip(ship, x1, y1, x2, y2);
+                        Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
+                        isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
 
                         if (!isPlaced)
                         {
                             Console.WriteLine("Invalid placement. The ship cannot be placed here.");
+                            CancelShipPlacement(player, shipSize);
                         }
                     }
 
@@ -123,6 +126,19 @@ namespace Battleships
             };
 
             return shipFactory.CreateShip(player.PlayerId); // Create the ship through the factory
+        }
+
+        static void CancelShipPlacement(Player player, int shipSize)
+        {
+            ShipFactory shipFactory = shipSize switch
+            {
+                1 => OneMastFactory.Instance,
+                2 => TwoMastFactory.Instance,
+                3 => ThreeMastFactory.Instance,
+                4 => FourMastFactory.Instance, // Ensure the correct factory is called for the four-mast ship
+                _ => throw new ArgumentException("Invalid ship size")
+            };
+            shipFactory.CancelShipPlacement(player.PlayerId);
         }
 
         static void Attack(Game game)
@@ -174,11 +190,11 @@ namespace Battleships
                 input = Console.ReadLine();
                 switch (input)
                 {
-                    case "A":
+                    case "A" or "a":
                         Attack(game);
                         inputInvalid = false;
                         break;
-                    case "U":
+                    case "U" or "u":
                         success = game.CommandInvoker.Undo();
                         if (success)
                         {
@@ -189,7 +205,7 @@ namespace Battleships
                             Console.WriteLine("No moves to undo.");
                         }
                         break;
-                    case "R":
+                    case "R" or "r":
                         success = game.CommandInvoker.Redo();
                         if (success)
                         {

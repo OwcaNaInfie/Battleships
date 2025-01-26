@@ -18,9 +18,6 @@ namespace Battleships.Models
             IsTurn = false;
             PlayerId = PlayerIdGenerator.GetNewId();
         }
-        // implementation of placeShip method
-
-        // implementation of makeMove method
     }
 
     public static class PlayerIdGenerator {
