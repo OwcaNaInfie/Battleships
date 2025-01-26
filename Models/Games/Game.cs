@@ -11,8 +11,8 @@ namespace Battleships.Models.Games
         public Player Player2 { get; set; }
         public Player CurrentTurn { get; set; }
         public string Status { get; set; }
-        public Board Board1; //{ get; set; }
-        public Board Board2; //{ get; set; }
+        public Board Board1 { get; set; }
+        public Board Board2 { get; set; }
         public CommandManager CommandInvoker { get; } = new CommandManager();
 
         public Game(int gameId, string player1Name, string player2Name)

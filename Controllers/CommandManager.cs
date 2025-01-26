@@ -30,24 +30,34 @@ namespace Battleships.Controllers
             return success;
         }
 
-        public void Undo()
+        public bool Undo()
         {
             if (UndoStack.Count > 0)
             {
                 ICommand command = UndoStack.Pop();
                 command.Undo();
                 RedoStack.Push(command);
+                return true;
             }
+            return false;
         }
 
-        public void Redo()
+        public bool Redo()
         {
             if (RedoStack.Count > 0)
             {
                 ICommand command = RedoStack.Pop();
                 command.Execute();
                 UndoStack.Push(command);
+                return true;
             }
+            return false;
+        }
+
+        public void ClearHistory()
+        {
+            UndoStack.Clear();
+            RedoStack.Clear();
         }
     }
 }

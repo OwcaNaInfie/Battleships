@@ -27,13 +27,14 @@ namespace Battleships
             PlaceShips(game.Player1);
             PlaceShips(game.Player2);
 
+            game.CommandInvoker.ClearHistory();
+
             // Start the game loop
             while (game.CheckWinner() == null)
             {
                 Console.WriteLine(game.Status);
                 DisplayBoards(game);
-                Attack(game);
-                game.SwitchTurn();
+                OptionsChoice(game);
             }
 
             // Once the game is over
@@ -47,7 +48,6 @@ namespace Battleships
                 Console.WriteLine("Game over without a winner.");
             }
         }
-
 
         static void PlaceShips(Player player)
         {
@@ -152,16 +152,6 @@ namespace Battleships
 
         }
 
-        public static void PromptForCoordinates()
-        {
-            Console.WriteLine("Enter x, y coordinates:");
-
-            string[] attackCoord = Console.ReadLine().Split();
-            int x = int.Parse(attackCoord[0]);
-            int y = int.Parse(attackCoord[1]);
-
-        }
-
         private static void DisplayBoards(Game game)
         {
             Console.WriteLine("Your ships' status:");
@@ -170,6 +160,56 @@ namespace Battleships
             Console.WriteLine("Attacks status:");
             Board opponentBoard = game.GetOpponentBoard();
             opponentBoard.DisplayBoard(false);
+        }
+
+        private static void OptionsChoice(Game game)
+        {
+            Console.WriteLine("Select action: A - attack, U - undo, R - redo");
+            string? input;
+            bool inputInvalid = true;
+            bool success;
+
+            do
+            {
+                input = Console.ReadLine();
+                switch (input)
+                {
+                    case "A":
+                        Attack(game);
+                        inputInvalid = false;
+                        break;
+                    case "U":
+                        success = game.CommandInvoker.Undo();
+                        if (success)
+                        {
+                            inputInvalid = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("No moves to undo.");
+                        }
+                        break;
+                    case "R":
+                        success = game.CommandInvoker.Redo();
+                        if (success)
+                        {
+                            inputInvalid = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("No moves to redo.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Invalid input. Try again.");
+                        inputInvalid = true;
+                        break;
+
+                }
+
+            } while (inputInvalid);
+
+            game.SwitchTurn();
         }
     }
 }
