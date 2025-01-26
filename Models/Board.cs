@@ -93,6 +93,8 @@ namespace Battleships.Models
         {
             for (int y = 0; y < Size; y++)
             {
+                Console.Write(y + " |"); // Writing out row numbers
+
                 for (int x = 0; x < Size; x++)
                 {
                     Cell cell = Grid[x][y];
@@ -101,16 +103,29 @@ namespace Battleships.Models
                     // If it's hit, show a ship symbol (#) as well
                     if (cell.State is UnattackedOccupiedState || cell.State is HitOccupiedState)
                     {
-                        Console.Write("#");  // Ship present
+                        Console.Write(" # ");  // Ship present
                     }
                     else
                     {
-                        Console.Write(".");  // Empty or missed cell
+                        Console.Write(" . ");  // Empty or missed cell
                     }
                 }
                 Console.WriteLine();  // Move to the next row
             }
+
+            Console.Write("   "); // Bottom separation line
+            for (int i = 0; i < Size; i++)
+            {
+                Console.Write("---");
+            }
             Console.WriteLine();
+
+            Console.Write("   "); // Writing out column numbers
+            for (int i = 0; i < Size; i++)
+            {
+                Console.Write(" " + i + " ");
+            }
+            Console.Write("\n\n");
         }
     }
 }

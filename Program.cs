@@ -49,7 +49,9 @@ namespace Battleships
 
         static void PlaceShips(Player player)
         {
-            Console.WriteLine($"{player.Name}, it's time to place your ships!");
+            Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
+
+            player.Board.DisplayBoard();
 
             // Corrected number of ships
             PlaceShipForPlayer(player, 1, 4); // 4 ships of size 1-mast
