@@ -91,5 +91,21 @@ namespace Battleships.Models
             }
             Console.Write("\n\n");
         }
+
+        public bool AreAllShipsSunk()
+        {
+            foreach (var row in Grid)
+            {
+                foreach (var cell in row)
+                {
+                    if (cell.State is UnattackedOccupiedState)
+                    {
+                        return false; // There are still unhit ship cells
+                    }
+                }
+            }
+            return true; // All ship cells are hit
+        }
     }
+
 }

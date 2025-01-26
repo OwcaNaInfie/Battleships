@@ -6,6 +6,7 @@ namespace Battleships.Models.Games
 {
     public class Game
     {
+        public Player Winner { get; private set; }
         public int GameId { get; set; }
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
@@ -50,12 +51,19 @@ namespace Battleships.Models.Games
             return (CurrentTurn == Player1) ? Player1.Board : Player2.Board;
         }
 
-        // Checks if either player has won
-        public Player CheckWinner()
+        public Player? CheckWinner()
         {
-            // Implement how to check if a player is a winner 
+            if (Player1.Board.AreAllShipsSunk())
+            {
+                return Player2; // Player 2 wins
+            }
+            if (Player2.Board.AreAllShipsSunk())
+            {
+                return Player1; // Player 1 wins
+            }
             return null; // No winner yet
         }
+
 
         // Saves current game state
         public IGameState Save()

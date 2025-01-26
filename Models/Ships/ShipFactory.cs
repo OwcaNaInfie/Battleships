@@ -7,8 +7,8 @@ namespace Battleships.Models.Ships
     public abstract class ShipFactory
     {
         // Abstrakcyjna metoda do tworzenia statku
-        public abstract IShip CreateShip(int playerNumber);
-        public abstract void CancelShipPlacement(int playerNumber);
+        public abstract IShip CreateShip(int playerId);
+        public abstract void CancelShipPlacement(int playerId);
 
         private static Dictionary<int, Dictionary<string, int>> PlayerShipCounts = new();
 
@@ -55,9 +55,9 @@ namespace Battleships.Models.Ships
         }
 
         // Metoda dekorująca statek w zależności od numeru gracza
-        protected IShip DecorateShip(IShip ship, int playerNumber)
+        protected IShip DecorateShip(IShip ship, int playerId)
         {
-            return playerNumber == 1 ? new Player1ShipDecorator(ship) : new Player2ShipDecorator(ship);
+            return playerId == 1 ? new Player1ShipDecorator(ship) : new Player2ShipDecorator(ship);
         }
     }
 
@@ -130,18 +130,20 @@ namespace Battleships.Models.Ships
 
         public OneMastFactory() { }
 
-        public override IShip CreateShip(int playerNumber)
+        public override IShip CreateShip(int playerId)
         {
-            if (!CanCreateShip("One-Mast", playerNumber))
-                throw new InvalidOperationException("Nie można stworzyć wiekszej ilości jednomasztowców.");
-            IncrementShipCount("One-Mast", playerNumber);
+            if (!CanCreateShip("One-Mast", playerId))
+            {
+                Console.WriteLine("Nie można stworzyć wiekszej ilości jednomasztowców.");
+            }
+            IncrementShipCount("One-Mast", playerId);
             IShip ship = new Ship { Name = "One-Mast", Size = 1 };
-            return DecorateShip(ship, playerNumber);
+            return DecorateShip(ship, playerId);
         }
 
-        public override void CancelShipPlacement(int playerNumber)
+        public override void CancelShipPlacement(int playerId)
         {
-            DecrementShipCount("One-Mast", playerNumber);
+            DecrementShipCount("One-Mast", playerId);
         }
     }
 
@@ -153,17 +155,19 @@ namespace Battleships.Models.Ships
 
         public TwoMastFactory() { }
 
-        public override IShip CreateShip(int playerNumber)
+        public override IShip CreateShip(int playerId)
         {
-            if (!CanCreateShip("Two-Mast", playerNumber))
-                throw new InvalidOperationException("Nie można stworzyć wiekszej ilości dwumasztowców.");
-            IncrementShipCount("Two-Mast" , playerNumber);
+            if (!CanCreateShip("Two-Mast", playerId))
+            {
+                Console.WriteLine("Nie można stworzyć wiekszej ilości dwumasztowców.");
+            }
+            IncrementShipCount("Two-Mast" , playerId);
             IShip ship = new Ship { Name = "Two-Mast", Size = 2 };
-            return DecorateShip(ship, playerNumber);
+            return DecorateShip(ship, playerId);
         }
-        public override void CancelShipPlacement(int playerNumber)
+        public override void CancelShipPlacement(int playerId)
         {
-            DecrementShipCount("Two-Mast", playerNumber);
+            DecrementShipCount("Two-Mast", playerId);
         }
     }
 
@@ -175,17 +179,19 @@ namespace Battleships.Models.Ships
 
         public ThreeMastFactory() { }
 
-        public override IShip CreateShip(int playerNumber)
+        public override IShip CreateShip(int playerId)
         {
-            if (!CanCreateShip("Three-Mast" , playerNumber))
-                throw new InvalidOperationException("Nie można stworzyć wiekszej ilości trójmasztowców.");
-            IncrementShipCount("Three-Mast", playerNumber);
+            if (!CanCreateShip("Three-Mast" , playerId))
+            {
+                Console.WriteLine("Nie można stworzyć wiekszej ilości trójmasztowców.");
+            }
+            IncrementShipCount("Three-Mast", playerId);
             IShip ship = new Ship { Name = "Three-Mast", Size = 3 };
-            return DecorateShip(ship, playerNumber);
+            return DecorateShip(ship, playerId);
         }
-        public override void CancelShipPlacement(int playerNumber)
+        public override void CancelShipPlacement(int playerId)
         {
-            DecrementShipCount("Three-Mast", playerNumber);
+            DecrementShipCount("Three-Mast", playerId);
         }
     }
 
@@ -197,18 +203,20 @@ namespace Battleships.Models.Ships
 
         public FourMastFactory() { }
 
-        public override IShip CreateShip(int playerNumber)
+        public override IShip CreateShip(int playerId)
         {
-            if (!CanCreateShip("Four-Mast", playerNumber))
-                throw new InvalidOperationException("Nie można stworzyć wiekszej ilości czteromasztowców.");
-            IncrementShipCount("Four-Mast", playerNumber);
+            if (!CanCreateShip("Four-Mast", playerId))
+            {
+                Console.WriteLine("Nie można stworzyć wiekszej ilości czteromasztowców.");
+            }
+            IncrementShipCount("Four-Mast", playerId);
             IShip ship = new Ship { Name = "Four-Mast", Size = 4 };
-            return DecorateShip(ship, playerNumber);
+            return DecorateShip(ship, playerId);
         }
 
-        public override void CancelShipPlacement(int playerNumber)
+        public override void CancelShipPlacement(int playerId)
         {
-            DecrementShipCount("Four-Mast", playerNumber);
+            DecrementShipCount("Four-Mast", playerId);
         }
     }
 
