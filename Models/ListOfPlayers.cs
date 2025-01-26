@@ -9,11 +9,11 @@ namespace Battleships.Models
             this.Players = new List<Player>();
         }
 
-        public void AddPlayer(Player player)
-        {
-            player.PlayerId = GetNextPlayerId();
-            Players.Add(player);
-        }
+        // public void AddPlayer(Player player)
+        // {
+            
+        //     Players.Add(player);
+        // }
 
         public List<Player> GetPlayers()
         {
