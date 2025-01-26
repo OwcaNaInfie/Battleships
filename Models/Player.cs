@@ -12,7 +12,6 @@ namespace Battleships.Models
         public Player(string name)
         {
             Name = name;
-            // player is given a new Board a ships
             Board = new Board();
             Ships = new List<IShip>();
             IsTurn = false;

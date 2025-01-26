@@ -18,19 +18,18 @@ namespace Battleships
             Console.WriteLine("Please enter the name for Player 2:");
             string player2Name = Console.ReadLine();
 
-            // Create a new game and initialize players with PlayerId
+            // Stworzenie gry i inicjalizacja graczy
             Game game = new Game(1, player1Name, player2Name);
 
-            // Start the game
             game.StartGame();
 
-            // Let each player place their ships
+            // Każdy gracz stawia swoje statki
             PlaceShips(game.Player1, game);
             PlaceShips(game.Player2, game);
 
             game.CommandInvoker.ClearHistory();
 
-            // Start the game loop
+            // Rozpoczęcie pętli gry
             while (game.CheckWinner() == null)
             {
                 Console.WriteLine(game.Status);
@@ -38,7 +37,7 @@ namespace Battleships
                 OptionsChoice(game);
             }
 
-            // Notify and display the winner
+            // Powiadom o wygranym graczu
             Player winner = game.CheckWinner();
             if (winner != null)
             {
@@ -50,6 +49,7 @@ namespace Battleships
             {
                 Console.WriteLine("Game over without a winner.");
             }
+
         }
 
         static void PlaceShips(Player player, Game game)
@@ -58,15 +58,15 @@ namespace Battleships
 
             player.Board.DisplayBoard();
 
-            // Corrected number of ships
-            PlaceShipForPlayer(game, player, 1, 4); // 4 ships of size 1-mast
-            PlaceShipForPlayer(game, player, 2, 3); // 3 ships of size 2-mast
-            PlaceShipForPlayer(game, player, 3, 2); // 2 ships of size 3-mast
-            PlaceShipForPlayer(game, player, 4, 1); // 1 ship of size 4-mast
+            PlaceShipForPlayer(game, player, 1, 4); // 4 statki 1-masztowe
+            PlaceShipForPlayer(game, player, 2, 3); // 3 statki 2-masztowe
+            PlaceShipForPlayer(game, player, 3, 2); // 2 statki 3-masztowe
+            PlaceShipForPlayer(game, player, 4, 1); // 1 statek 4-masztowy
 
             Console.WriteLine($"{player.Name} has placed all ships.");
         }
 
+        // Metoda pozwalająca graczowi wykonać akcję podczas stawiania statków
         static void PlaceShipForPlayer(Game game, Player player, int shipSize, int count)
         {
             for (int i = 0; i < count; i++)
@@ -132,11 +132,12 @@ namespace Battleships
                 1 => OneMastFactory.Instance,
                 2 => TwoMastFactory.Instance,
                 3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance, // Ensure the correct factory is called for the four-mast ship
+                4 => FourMastFactory.Instance,
                 _ => throw new ArgumentException("Invalid ship size")
             };
 
-            return shipFactory.CreateShip(player.PlayerId); // Create the ship through the factory
+            // Stworzenie statku
+            return shipFactory.CreateShip(player.PlayerId); 
         }
 
         static void CancelShipPlacement(Player player, int shipSize)
@@ -146,12 +147,13 @@ namespace Battleships
                 1 => OneMastFactory.Instance,
                 2 => TwoMastFactory.Instance,
                 3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance, // Ensure the correct factory is called for the four-mast ship
+                4 => FourMastFactory.Instance, 
                 _ => throw new ArgumentException("Invalid ship size")
             };
             shipFactory.CancelShipPlacement(player.PlayerId);
         }
 
+        // Metoda wykonująca czynność ataku
         static void Attack(Game game)
         {
             Console.WriteLine("Which cell would you like to attack?");
@@ -189,6 +191,7 @@ namespace Battleships
             opponentBoard.DisplayBoard(false);
         }
 
+        //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
         private static void OptionsChoice(Game game)
         {
             Console.WriteLine("Select action: A - attack, U - undo, R - redo");
@@ -247,7 +250,7 @@ namespace Battleships
                 Console.WriteLine($"Place your {shipSize}-mast ship (Ship {i + 1} of {count}).");
                 Console.WriteLine("Enter the start coordinate (x1 y1): ");
                 
-                int x1, y1, x2 = 0, y2 = 0; // Initialize x2, y2 to default values
+                int x1, y1, x2 = 0, y2 = 0; 
                 string[] startCoord = Console.ReadLine().Split();
                 x1 = int.Parse(startCoord[0]);
                 y1 = int.Parse(startCoord[1]);
@@ -259,7 +262,7 @@ namespace Battleships
                     x2 = int.Parse(endCoord[0]);
                     y2 = int.Parse(endCoord[1]);
 
-                    // Calculate the length of the ship
+                    // Obliczenie długości statku
                     int length = (x1 == x2) ? Math.Abs(y2 - y1) + 1 : (y1 == y2) ? Math.Abs(x2 - x1) + 1 : 0;
                     if (length != shipSize)
                     {
@@ -269,15 +272,15 @@ namespace Battleships
                 }
                 else
                 {
-                    // For 1-mast ships, start and end coordinates are the same
+                    // Dla 1-masztowców pary współrzędnych są takie same
                     x2 = x1;
                     y2 = y1;
                 }
 
-                // Create the ship
+                // Stworzenie statku
                 IShip ship = CreateShip(player, shipSize);
 
-                // Place the ship using start and end coordinates
+                // Ułożenie statku na planszy
                 Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
                 isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
 

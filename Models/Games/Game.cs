@@ -27,14 +27,13 @@ namespace Battleships.Models.Games
             Status = "Started";
         }
 
-        // Starts the game and randomly assigns the first turn
+        // Metoda rozpoczynająca grę
         public void StartGame()
         {
             Console.WriteLine("Game Started!");
-            // Removed the ship placement logic from here
         }
 
-        // Switches the turn to the other player
+        // Metoda zmieniająca kolej gracza
         public void SwitchTurn()
         {
             CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
@@ -55,24 +54,24 @@ namespace Battleships.Models.Games
         {
             if (Player1.Board.AreAllShipsSunk())
             {
-                return Player2; // Player 2 wins
+                return Player2; // Gracz 2 wygrał
             }
             if (Player2.Board.AreAllShipsSunk())
             {
-                return Player1; // Player 1 wins
+                return Player1; // Gracz 1 wygrał
             }
-            return null; // No winner yet
+            return null; // Nie ma wygranego
         }
 
 
-        // Saves current game state
+        // Zapisanie stanu aktualnej gry
         public IGameState Save()
         {
             Console.WriteLine("Current state: " + Status + "saved");
             return new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.Status, this.Board1, this.Board2);
         }
 
-        // Restores the state
+        // Zwrócenie stanu aktulnej gry
         public void Restore(IGameState iGameState) 
         {
             if (iGameState is not GameState gameState )
@@ -90,7 +89,7 @@ namespace Battleships.Models.Games
             Console.WriteLine("State restored:" + this.Status);
         }
 
-        // Private memento class
+        // Memento
         private class GameState : IGameState
         {
             public int GameId { get; }

@@ -20,10 +20,5 @@ namespace Battleships.Models
             return Players;
         }
 
-        private int GetNextPlayerId()
-        {
-            // Generates the next ID based on the existing players in the list
-            return Players.Count == 0 ? 1 : Players[Players.Count - 1].PlayerId + 1;
-        }
     }
 }

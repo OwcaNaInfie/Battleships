@@ -7,12 +7,13 @@ namespace Battleships.Models
     {
         public int Size { get; set; }
         public List<List<Cell>> Grid { get; set; }
-        public List<IShip> Ships { get; set; }  // Add this line
+        public List<IShip> Ships { get; set; }  
 
+        // Inicjalizacja planszy
         public Board(int size = 10)
         {
             this.Size = size;
-            Ships = new List<IShip>();  // Initialize the Ships list
+            Ships = new List<IShip>();  
             Grid = new List<List<Cell>>();
 
             for (int i = 0; i < size; i++)
@@ -45,12 +46,12 @@ namespace Battleships.Models
         }
 
 
-        // Add the DisplayBoard method to visualize the board (as you already have)
+        // Wizualizacja planszy
         public void DisplayBoard(bool showShipPlacement = true)
         {
             for (int y = 0; y < Size; y++)
             {
-                Console.Write(y + " |"); // Writing out row numbers
+                Console.Write(y + " |"); // Wiersze
 
                 for (int x = 0; x < Size; x++)
                 {
@@ -59,7 +60,6 @@ namespace Battleships.Models
                     switch (cell.State)
                     {
                         case UnattackedOccupiedState:
-                            // A player can see their own ship placement, but they can't see the other player's
                             if (showShipPlacement) { Console.Write(" # "); }
                             else { Console.Write(" . "); }
                             break;
@@ -74,17 +74,17 @@ namespace Battleships.Models
                             break;
                     }
                 }
-                Console.WriteLine();  // Move to the next row
+                Console.WriteLine();  
             }
 
-            Console.Write("   "); // Bottom separation line
+            Console.Write("   "); 
             for (int i = 0; i < Size; i++)
             {
                 Console.Write("---");
             }
             Console.WriteLine();
 
-            Console.Write("   "); // Writing out column numbers
+            Console.Write("   "); // Kolumny
             for (int i = 0; i < Size; i++)
             {
                 Console.Write(" " + i + " ");
@@ -92,6 +92,7 @@ namespace Battleships.Models
             Console.Write("\n\n");
         }
 
+        // Metoda sprawdzająca czy wszystkie statki zostały zatopione
         public bool AreAllShipsSunk()
         {
             foreach (var row in Grid)
@@ -100,11 +101,11 @@ namespace Battleships.Models
                 {
                     if (cell.State is UnattackedOccupiedState)
                     {
-                        return false; // There are still unhit ship cells
+                        return false; // Nie wszystkie zajęte komórki są trafione
                     }
                 }
             }
-            return true; // All ship cells are hit
+            return true; // Wszystkie komórki są trafione
         }
     }
 

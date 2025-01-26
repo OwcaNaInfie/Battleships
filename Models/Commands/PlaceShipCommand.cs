@@ -29,89 +29,85 @@ namespace Battleships.Models.Commands
         public bool Execute()
         {
 
-            // Ensure the ship is within bounds
             if (!Board.IsInBounds(StartX, StartY) && !Board.IsInBounds(EndX, EndY))
             {
                 return false;
             }
 
-            // Calculate the length of the ship based on the coordinates
+            // Określenie długości statku na podstawie współrzędnych
             int length = 0;
             if (StartX == EndX)
             {
-                // Vertical ship placement
+                // Położenie pionowe statku
                 length = Math.Abs(EndY - StartY) + 1;
             }
             else if (StartY == EndY)
             {
-                // Horizontal ship placement
+                // Położenie poziome statku
                 length = Math.Abs(EndX - StartX) + 1;
             }
 
-            // Check if the length matches the ship size
+            // Sprawdzenie czy długość równa się długości statku
             if (length != Ship.Size)
             {
                 Console.WriteLine($"The length of the ship doesn't match the required size. The ship size is {Ship.Size}.");
                 return false;
             }
 
-            // Loop through the cells the ship occupies based on start and end coordinates
+            // Przejrzenie komórek, na których znajduje się statek na podstawie współrzędnych początkowych i końcowych
             for (int i = 0; i < Ship.Size; i++)
             {
                 int x = StartX;
                 int y = StartY;
 
-                // Determine if we are going horizontally or vertically
                 if (StartX == EndX)
                 {
-                    y += i; // Vertical placement
+                    y += i; // Położenie pionowe
                 }
                 else
                 {
-                    x += i; // Horizontal placement
+                    x += i; // Położenie poziome
                 }
 
-                // Check if the cell is already occupied
+                // Sprawdzenie czy komórka jest już zajęta
                 var cell = Board.GetCell(x, y);
                 if (cell.State is UnattackedOccupiedState)
                 {
                     Console.WriteLine($"Error: Cell at ({x},{y}) is already occupied.");
-                    return false; // Invalid placement if the cell is occupied
+                    return false; // Jeśli komórka jest już zajęta - nieodpowiednie ułożenie statku
                 }
 
-                // Mark the cell as occupied by the ship
+                // Zaznaczenie komórki jako zajętej
                 cell.MarkOccupied();
             }
 
-            // Add the ship to the list after placement
+            // Dodanie statku do listy
             Board.Ships.Add(Ship);
             return true;
         }
 
         public void Undo()
         {
-            // Loop through the cells the ship occupies based on start and end coordinates
             for (int i = 0; i < Ship.Size; i++)
             {
                 int x = StartX;
                 int y = StartY;
 
-                // Determine if we are going horizontally or vertically
                 if (StartX == EndX)
                 {
-                    y += i; // Vertical placement
+                    y += i;
                 }
                 else
                 {
-                    x += i; // Horizontal placement
+                    x += i; 
                 }
 
                 var cell = Board.GetCell(x, y);
-                // Mark the cell as empty
+                // Zaznaczenie komórki jako pustej
                 cell.MarkUnattackedEmpty();
             }
 
-            // Remove the ship from the board's ship list
+            // Usunięcie statku z listy postawionych statków
             Board.Ships.Remove(Ship);
         }
     }
