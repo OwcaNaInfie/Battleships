@@ -89,7 +89,7 @@ namespace Battleships.Models
 
 
         // Add the DisplayBoard method to visualize the board (as you already have)
-        public void DisplayBoard()
+        public void DisplayBoard(bool showShipPlacement = true)
         {
             for (int y = 0; y < Size; y++)
             {
@@ -99,15 +99,22 @@ namespace Battleships.Models
                 {
                     Cell cell = Grid[x][y];
 
-                    // If the cell is occupied by a ship (UnattackedOccupiedState), display a ship symbol (#)
-                    // If it's hit, show a ship symbol (#) as well
-                    if (cell.State is UnattackedOccupiedState || cell.State is HitOccupiedState)
+                    switch (cell.State)
                     {
-                        Console.Write(" # ");  // Ship present
-                    }
-                    else
-                    {
-                        Console.Write(" . ");  // Empty or missed cell
+                        case UnattackedOccupiedState:
+                            // A player can see their own ship placement, but they can't see the other player's
+                            if (showShipPlacement) { Console.Write(" # "); }
+                            else { Console.Write(" . "); }
+                            break;
+                        case HitOccupiedState:
+                            Console.Write(" X ");
+                            break;
+                        case UnattackedEmptyState:
+                            Console.Write(" . ");
+                            break;
+                        case HitEmptyState:
+                            Console.Write(" O ");
+                            break;
                     }
                 }
                 Console.WriteLine();  // Move to the next row
