@@ -19,8 +19,6 @@ namespace Battleships
 
             // Create a new game and initialize players with PlayerId
             Game game = new Game(1, player1Name, player2Name);
-            game.Player1 = new Player(player1Name);
-            game.Player2 = new Player(player2Name);
 
             // Start the game
             game.StartGame();
