@@ -8,16 +8,16 @@ namespace Battleships.Models
         public Board Board { get; set; }
         public List<IShip> Ships { get; set; }
         public bool IsTurn { get; set; }
-        public char ShipSymbol { get; set; }
+   
 
-        public Player(string name, char shipSymbol = '#')
+        public Player(string name)
         {
             Name = name;
             Board = new Board();
             Ships = new List<IShip>();
             IsTurn = false;
             PlayerId = PlayerIdGenerator.GetNewId();
-            ShipSymbol = shipSymbol;
+        
         }
     }
 

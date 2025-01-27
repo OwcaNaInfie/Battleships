@@ -18,28 +18,9 @@ namespace Battleships
             Console.WriteLine("Please enter the name for Player 2:");
             string player2Name = Console.ReadLine();
 
-            // Wybór znaku statków przez graczy
-            char player1ShipSymbol = '#';
-            char player2ShipSymbol = '#';
-
-            if (player1Name.Contains("special"))
-            {
-                Console.WriteLine($"{player1Name}, please choose your ship symbol (default is #):");
-                player1ShipSymbol = Console.ReadKey().KeyChar;
-                if (player1ShipSymbol == '\r') player1ShipSymbol = '#';
-                Console.WriteLine();
-            }
-
-            if (player2Name.Contains("special"))
-            {
-                Console.WriteLine($"{player2Name}, please choose your ship symbol (default is #):");
-                player2ShipSymbol = Console.ReadKey().KeyChar;
-                if (player2ShipSymbol == '\r') player2ShipSymbol = '#';
-                Console.WriteLine();
-            }
 
             // Stworzenie gry i inicjalizacja graczy
-            Game game = new Game(1, player1Name, player2Name, player1ShipSymbol, player2ShipSymbol);
+            Game game = new Game(1, player1Name, player2Name);
 
             game.StartGame();
 
@@ -76,12 +57,13 @@ namespace Battleships
         {
             Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
 
-            player.Board.DisplayBoard(true, player.ShipSymbol);
+            player.Board.DisplayBoard(true, '.');
 
             PlaceShipForPlayer(game, player, 1, 4); // 4 statki 1-masztowe
             PlaceShipForPlayer(game, player, 2, 3); // 3 statki 2-masztowe
             PlaceShipForPlayer(game, player, 3, 2); // 2 statki 3-masztowe
             PlaceShipForPlayer(game, player, 4, 1); // 1 statek 4-masztowy
+
 
 
             Console.WriteLine($"{player.Name} has placed all ships.");
@@ -141,7 +123,7 @@ namespace Battleships
                     }
 
                 } while (inputInvalid);
-                player.Board.DisplayBoard(true, player.ShipSymbol);
+
             }
             game.CommandInvoker.ClearHistory();
         }
@@ -158,7 +140,10 @@ namespace Battleships
             };
 
             // Stworzenie statku
-            return shipFactory.CreateShip(player.PlayerId);
+            IShip ship = shipFactory.CreateShip(player.PlayerId);
+            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship) : new Player2ShipDecorator(ship);
+
+            return decoratedShip;
         }
 
         static void CancelShipPlacement(Player player, int shipSize)
@@ -205,11 +190,16 @@ namespace Battleships
         private static void DisplayBoards(Game game)
         {
             Console.WriteLine("Your ships' status:");
-            game.GetCurrentBoard().DisplayBoard(true, game.CurrentTurn.ShipSymbol);
+
+            // Pobierz symbol statku z planszy gracza
+            char shipSymbol = game.GetCurrentBoard().Ships.FirstOrDefault()?.Symbol ?? '.';
+
+            // Wyświetl planszę gracza z widocznymi statkami, używając symbolu statku
+            game.GetCurrentBoard().DisplayBoard(true, shipSymbol);
 
             Console.WriteLine("Attacks status:");
             Board opponentBoard = game.GetOpponentBoard();
-            opponentBoard.DisplayBoard(false);
+            opponentBoard.DisplayBoard(false); // Plansza przeciwnika z widocznymi atakami
         }
 
         //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
@@ -304,7 +294,7 @@ namespace Battleships
                 // Ułożenie statku na planszy
                 Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
                 isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
-
+                player.Board.DisplayBoard(true, ship.Symbol);
                 if (!isPlaced)
                 {
                     Console.WriteLine("Invalid placement. The ship cannot be placed here.");

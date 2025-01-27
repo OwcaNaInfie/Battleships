@@ -47,7 +47,7 @@ namespace Battleships.Models
 
 
         // Wizualizacja planszy
-        public void DisplayBoard(bool showShipPlacement = true, char shipSymbol = '#')
+        public void DisplayBoard(bool showShipPlacement = true, char shipSymbol = '.')
         {
             for (int y = 0; y < Size; y++)
             {
@@ -60,8 +60,14 @@ namespace Battleships.Models
                     switch (cell.State)
                     {
                         case UnattackedOccupiedState:
-                            if (showShipPlacement) { Console.Write($" {shipSymbol} "); }
-                            else { Console.Write(" . "); }
+                            if (showShipPlacement)
+                            {
+                                Console.Write($" {shipSymbol} ");
+                            }
+                            else
+                            {
+                                Console.Write(" . ");
+                            }
                             break;
                         case HitOccupiedState:
                             Console.Write(" X ");

@@ -16,11 +16,11 @@ namespace Battleships.Models.Games
         public Board Board2 { get; set; }
         public CommandManager CommandInvoker { get; } = new CommandManager();
 
-        public Game(int gameId, string player1Name, string player2Name, char player1ShipSymbol, char player2ShipSymbol)
+        public Game(int gameId, string player1Name, string player2Name)
         {
             GameId = gameId;
-            Player1 = new Player(player1Name, player1ShipSymbol);
-            Player2 = new Player(player2Name, player2ShipSymbol);
+            Player1 = new Player(player1Name);
+            Player2 = new Player(player2Name);
             Board1 = Player1.Board;
             Board2 = Player2.Board;
             CurrentTurn = Player1;

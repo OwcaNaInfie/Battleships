@@ -72,8 +72,8 @@ namespace Battleships.Models.Ships
         }
         public virtual string Name { get => DecoratedShip.Name; set => DecoratedShip.Name = value; }
         public virtual int Size { get => DecoratedShip.Size; set => DecoratedShip.Size = value; }
-        public virtual string Pattern { get => DecoratedShip.Pattern; set => DecoratedShip.Pattern = value; }
-        public virtual string Color { get => DecoratedShip.Color; set => DecoratedShip.Color = value; }
+        public virtual char Symbol { get => DecoratedShip.Symbol; set => DecoratedShip.Symbol = value; }
+
         public virtual List<Cell> Positions { get => DecoratedShip.Positions; set => DecoratedShip.Positions = value; }
         public virtual int Hits { get => DecoratedShip.Hits; set => DecoratedShip.Hits = value; }
 
@@ -87,39 +87,28 @@ namespace Battleships.Models.Ships
             DecoratedShip.ChangeTheme();
         }
     }
-
+    //TU DAM SPRAWDZENIE CZY GRACZ MA WIĘCEJ NIŻ KILKA WYGRANYCH JEŚLI MA TO SPECJALNE ZNAKI STATKU
     // Dekorator statków dla gracza 1
     public class Player1ShipDecorator : ShipDecorator
     {
         public Player1ShipDecorator(IShip ship) : base(ship)
         {
-            DecoratedShip.Pattern = "Blocky";
-            DecoratedShip.Color = "Red";
-        }
+            DecoratedShip.Symbol = '@';
 
-        public override void ChangeTheme()
-        {
-            DecoratedShip.Pattern = "Round";
-            DecoratedShip.Color = "Green";
-            Console.WriteLine("Theme changed.");
         }
     }
 
     // Dekorator statków dla gracza 2
     public class Player2ShipDecorator : ShipDecorator
     {
+
         public Player2ShipDecorator(IShip ship) : base(ship)
         {
-            DecoratedShip.Pattern = "Round";
-            DecoratedShip.Color = "Blue";
+            DecoratedShip.Symbol = '&';
+
         }
 
-        public override void ChangeTheme()
-        {
-            DecoratedShip.Pattern = "Blocky";
-            DecoratedShip.Color = "Purple";
-            Console.WriteLine("Theme changed.");
-        }
+
     }
 
     // Fabryka statków jednomasztowych
@@ -161,7 +150,7 @@ namespace Battleships.Models.Ships
             {
                 Console.WriteLine("Nie można stworzyć wiekszej ilości dwumasztowców.");
             }
-            IncrementShipCount("Two-Mast" , playerId);
+            IncrementShipCount("Two-Mast", playerId);
             IShip ship = new Ship { Name = "Two-Mast", Size = 2 };
             return DecorateShip(ship, playerId);
         }
@@ -181,7 +170,7 @@ namespace Battleships.Models.Ships
 
         public override IShip CreateShip(int playerId)
         {
-            if (!CanCreateShip("Three-Mast" , playerId))
+            if (!CanCreateShip("Three-Mast", playerId))
             {
                 Console.WriteLine("Nie można stworzyć wiekszej ilości trójmasztowców.");
             }
@@ -227,8 +216,7 @@ namespace Battleships.Models.Ships
         public int Size { get; set; }
         public List<Cell> Positions { get; set; }
         public int Hits { get; set; }
-        public string Pattern { get; set; }
-        public string Color { get; set; }
+        public char Symbol { get; set; }
         public bool IsSunk()
         {
             return Hits >= Size;
