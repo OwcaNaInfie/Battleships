@@ -34,7 +34,7 @@ namespace Battleships
             while (game.CheckWinner() == null)
             {
                 Console.WriteLine(game.Status);
-                DisplayBoards(game);
+                DisplayBoards(game, '.');
                 OptionsChoice(game);
             }
 
@@ -59,10 +59,10 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
-            PlaceShipForPlayer(game, player, 1, 4); // 4 statki 1-masztowe
-            PlaceShipForPlayer(game, player, 2, 3); // 3 statki 2-masztowe
-            PlaceShipForPlayer(game, player, 3, 2); // 2 statki 3-masztowe
-            PlaceShipForPlayer(game, player, 4, 1); // 1 statek 4-masztowy
+            PlaceShipForPlayer(game, player, 1, 4);
+            PlaceShipForPlayer(game, player, 2, 3);
+            PlaceShipForPlayer(game, player, 3, 2);
+            PlaceShipForPlayer(game, player, 4, 1);
 
 
 
@@ -141,7 +141,7 @@ namespace Battleships
 
             // Stworzenie statku
             IShip ship = shipFactory.CreateShip(player.PlayerId);
-            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship) : new Player2ShipDecorator(ship);
+            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship,player.PlayerId) : new Player2ShipDecorator(ship, player.PlayerId);
 
             return decoratedShip;
         }
@@ -187,20 +187,15 @@ namespace Battleships
 
         }
 
-        private static void DisplayBoards(Game game)
-        {
-            Console.WriteLine("Your ships' status:");
+     private static void DisplayBoards(Game game, char shipSymbol)
+{
+    Console.WriteLine("Your ships' status:");
+    game.GetCurrentBoard().DisplayBoard(true, shipSymbol); // Plansza gracza z widocznymi statkami
 
-            // Pobierz symbol statku z planszy gracza
-            char shipSymbol = game.GetCurrentBoard().Ships.FirstOrDefault()?.Symbol ?? '.';
-
-            // Wyświetl planszę gracza z widocznymi statkami, używając symbolu statku
-            game.GetCurrentBoard().DisplayBoard(true, shipSymbol);
-
-            Console.WriteLine("Attacks status:");
-            Board opponentBoard = game.GetOpponentBoard();
-            opponentBoard.DisplayBoard(false); // Plansza przeciwnika z widocznymi atakami
-        }
+    Console.WriteLine("Attacks status:");
+    Board opponentBoard = game.GetOpponentBoard();
+    opponentBoard.DisplayBoard(false); // Plansza przeciwnika z widocznymi atakami
+}
 
         //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
         private static void OptionsChoice(Game game)

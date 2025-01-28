@@ -1,5 +1,6 @@
 ﻿using Battleships.Models.Cells;
 using Battleships.Models.Ships;
+using Battleships.Models;
 
 namespace Battleships.Models.Ships
 {
@@ -57,7 +58,7 @@ namespace Battleships.Models.Ships
         // Metoda dekorująca statek w zależności od numeru gracza
         protected IShip DecorateShip(IShip ship, int playerId)
         {
-            return playerId == 1 ? new Player1ShipDecorator(ship) : new Player2ShipDecorator(ship);
+            return playerId == 1 ? new Player1ShipDecorator(ship, playerId) : new Player2ShipDecorator(ship, playerId);
         }
     }
 
@@ -87,28 +88,43 @@ namespace Battleships.Models.Ships
             DecoratedShip.ChangeTheme();
         }
     }
-    //TU DAM SPRAWDZENIE CZY GRACZ MA WIĘCEJ NIŻ KILKA WYGRANYCH JEŚLI MA TO SPECJALNE ZNAKI STATKU
+   
     // Dekorator statków dla gracza 1
     public class Player1ShipDecorator : ShipDecorator
     {
-        public Player1ShipDecorator(IShip ship) : base(ship)
+        public Player1ShipDecorator(IShip ship, int playerId) : base(ship)
         {
-            DecoratedShip.Symbol = '@';
+            var hallOfFame = HallOfFame.GetInstance();
+            var playerStats = hallOfFame.GetPlayerStatistics().FirstOrDefault(stats => stats.PlayerID == playerId);
 
+            if (playerStats != null && playerStats.GamesWon >= 3)
+            {
+                DecoratedShip.Symbol = '!';
+            }
+            else
+            {
+                DecoratedShip.Symbol = '@';
+            }
         }
     }
 
     // Dekorator statków dla gracza 2
     public class Player2ShipDecorator : ShipDecorator
     {
-
-        public Player2ShipDecorator(IShip ship) : base(ship)
+        public Player2ShipDecorator(IShip ship, int playerId) : base(ship)
         {
-            DecoratedShip.Symbol = '&';
+            var hallOfFame = HallOfFame.GetInstance();
+            var playerStats = hallOfFame.GetPlayerStatistics().FirstOrDefault(stats => stats.PlayerID == playerId);
 
+            if (playerStats != null && playerStats.GamesWon >= 3)
+            {
+                DecoratedShip.Symbol = '+';
+            }
+            else
+            {
+                DecoratedShip.Symbol = '&';
+            }
         }
-
-
     }
 
     // Fabryka statków jednomasztowych
