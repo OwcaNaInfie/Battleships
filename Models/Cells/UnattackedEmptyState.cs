@@ -20,7 +20,7 @@ namespace Battleships.Models.Cells
 
         public void MarkOccupied(Cell context)
         {
-            Console.WriteLine("A ship has been placed.");
+            //Console.WriteLine("A ship has been placed.");
             context.State = new UnattackedOccupiedState();
             StateDescription = "UnattackedOccupiedState";
         }

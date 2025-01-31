@@ -58,15 +58,133 @@ namespace Battleships
             Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
 
             player.Board.DisplayBoard(true, '.');
-
+            /*
             PlaceShipForPlayer(game, player, 1, 4);
             PlaceShipForPlayer(game, player, 2, 3);
             PlaceShipForPlayer(game, player, 3, 2);
             PlaceShipForPlayer(game, player, 4, 1);
-
+            */
+            PlaceShipForPlayer(game, player, 4, 3, 2, 1);
+            game.CommandInvoker.ClearHistory();
 
 
             Console.WriteLine($"{player.Name} has placed all ships.");
+        }
+
+        static void FillSizeArray(List<int> sizeArray, int oneMast, int twoMast, int threeMast, int fourMast)
+        {
+
+            for (int i = 0; i < oneMast; i++)
+            {
+                sizeArray.Add(1);
+            }
+
+            for (int i = 0; i < twoMast; i++)
+            {
+                sizeArray.Add(2);
+            }
+
+            for (int i = 0; i < threeMast; i++)
+            {
+                sizeArray.Add(3);
+            }
+
+            for (int i = 0; i < fourMast; i++)
+            {
+                sizeArray.Add(4);
+            }
+        }
+
+        static int CalculateShipsNow(List<int> sizeArray, int shipCount)
+        {
+            int lastIndex = 0;
+
+            if (sizeArray[shipCount] != 1)
+            {
+                lastIndex = sizeArray.FindLastIndex(x => x == sizeArray[shipCount] - 1);
+            }
+
+            int currentIndex = sizeArray[shipCount];
+
+            return shipCount - lastIndex;
+        }
+
+        static void PlaceShipForPlayer(Game game, Player player, int oneMast, int twoMast, int threeMast, int fourMast)
+        {
+            int sum = oneMast + twoMast + threeMast + fourMast;
+            int shipCount = 0;
+
+            List<int> sizeArray = new();
+            FillSizeArray(sizeArray, oneMast, twoMast, threeMast, fourMast);
+
+            Dictionary<int, int> shipTypeCount = new Dictionary<int, int>
+            {
+                { 1, oneMast },
+                { 2, twoMast },
+                { 3, threeMast },
+                { 4, fourMast }
+            };
+
+
+            while (shipCount < sum)
+            {
+                Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
+                string? input;
+                bool inputInvalid = true;
+                bool success;
+
+                do
+                {
+                    input = Console.ReadLine();
+                    switch (input)
+                    {
+                        case "P" or "p":
+                            int shipSize = sizeArray[shipCount];
+                            int totalOfShipType = shipTypeCount[shipSize];
+                            int shipTypeNowCount = CalculateShipsNow(sizeArray, shipCount);
+
+                            success = PlaceShip(shipSize, totalOfShipType, shipTypeNowCount, player, game);
+                            if (success)
+                            {
+                                inputInvalid = false;
+                                shipCount++;
+                            }
+                            break;
+                        case "U" or "u":
+                            success = game.CommandInvoker.Undo();
+                            if (success)
+                            {
+                                inputInvalid = false;
+                                shipCount--;
+                                CancelShipPlacement(player, sizeArray[shipCount]);
+                            }
+                            else
+                            {
+                                Console.WriteLine("No moves to undo.");
+                            }
+                            break;
+                        case "R" or "r":
+                            success = game.CommandInvoker.Redo();
+                            if (success)
+                            {
+                                inputInvalid = false;
+                                shipCount++;
+                            }
+                            else
+                            {
+                                Console.WriteLine("No moves to redo.");
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Invalid input. Try again.");
+                            inputInvalid = true;
+                            break;
+
+                    }
+
+                } while (inputInvalid);
+
+            } 
         }
 
         // Metoda pozwalająca graczowi wykonać akcję podczas stawiania statków
@@ -125,7 +243,6 @@ namespace Battleships
                 } while (inputInvalid);
 
             }
-            game.CommandInvoker.ClearHistory();
         }
 
         static IShip CreateShip(Player player, int shipSize)
