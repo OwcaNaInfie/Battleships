@@ -4,7 +4,7 @@ namespace Battleships.Models.Games
 {
     public class CurrentGameHistory
     {
-        // List of all the states in a current game
+        // Lista wszystkich stanów aktualnej gry
         private readonly Stack<IGameState> GameHistory = new Stack <IGameState>();
 
         public void Push(IGameState iGameState) 

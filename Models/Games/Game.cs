@@ -1,13 +1,14 @@
 using Battleships.Controllers;
 using Battleships.Models;
 using Battleships.Models.Ships;
+using Battleships.Models.Games;
 
 namespace Battleships.Models.Games
 {
     public class Game
     {
         public Player Winner { get; private set; }
-        public int GameId { get; set; }
+        public Guid GameId { get; set; }
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
         public Player CurrentTurn { get; set; }
@@ -15,10 +16,11 @@ namespace Battleships.Models.Games
         public Board Board1 { get; set; }
         public Board Board2 { get; set; }
         public CommandManager CommandInvoker { get; } = new CommandManager();
+        private ListOfGames ListOfGames = new ListOfGames();
 
-        public Game(int gameId, string player1Name, string player2Name)
+        public Game(string player1Name, string player2Name)
         {
-            GameId = gameId;
+            this.GameId = Guid.NewGuid();
             Player1 = new Player(player1Name);
             Player2 = new Player(player2Name);
             Board1 = Player1.Board;
@@ -71,7 +73,10 @@ namespace Battleships.Models.Games
         public IGameState Save()
         {
             Console.WriteLine("Current state: " + Status + " saved");
-            return new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.Status, this.Player1.Board.DeepClone(), this.Player2.Board.DeepClone());
+            IGameState gameState = new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.Status, this.Player1.Board.DeepClone(), this.Player2.Board.DeepClone());
+            ListOfGames.SaveGameHistory(this);
+            return gameState;
+            
         }
 
         // Zwrócenie stanu aktulnej gry
@@ -95,7 +100,7 @@ namespace Battleships.Models.Games
         // Memento
         private class GameState : IGameState
         {
-            public int GameId { get; }
+            public Guid GameId { get; }
             public Player Player1 { get; }
             public Player Player2 { get; }
             public Player CurrentTurn { get; }
@@ -103,7 +108,7 @@ namespace Battleships.Models.Games
             public Board Board1 { get; }
             public Board Board2 { get; }
 
-            public GameState(int gameId, Player player1, Player player2, Player currentTurn, string status, Board board1, Board board2)
+            public GameState(Guid gameId, Player player1, Player player2, Player currentTurn, string status, Board board1, Board board2)
             {
                 GameId = gameId;
                 Player1 = player1;

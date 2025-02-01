@@ -21,7 +21,7 @@ namespace Battleships
             string player2Name = Console.ReadLine();
 
             // Stworzenie gry i inicjalizacja graczy
-            Game game = new Game(1, player1Name, player2Name);
+            Game game = new Game(player1Name, player2Name);
 
             game.StartGame();
 
@@ -62,12 +62,12 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
-            PlaceShipForPlayer(game, player, 1, 4);
-
             // PlaceShipForPlayer(game, player, 1, 4);
-            // PlaceShipForPlayer(game, player, 2, 3);
-            // PlaceShipForPlayer(game, player, 3, 2);
-            // PlaceShipForPlayer(game, player, 4, 1);
+
+            PlaceShipForPlayer(game, player, 1, 4);
+            PlaceShipForPlayer(game, player, 2, 3);
+            PlaceShipForPlayer(game, player, 3, 2);
+            PlaceShipForPlayer(game, player, 4, 1);
           
 
             Console.WriteLine($"{player.Name} has placed all ships.");
