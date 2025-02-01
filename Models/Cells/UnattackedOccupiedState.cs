@@ -8,10 +8,13 @@ namespace Battleships.Models.Cells
 {
     internal class UnattackedOccupiedState : ICellState
     {
+        public string StateDescription = "UnattackedOccupiedState"; 
+
         public bool MarkHit(Cell context)
         {
             Console.WriteLine("A ship has been hit!");
             context.State = new HitOccupiedState();
+            StateDescription = "UnattackedOccupiedState";
             return true;
         }
 
