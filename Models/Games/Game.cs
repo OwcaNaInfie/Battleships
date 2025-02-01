@@ -37,7 +37,6 @@ namespace Battleships.Models.Games
         public void SwitchTurn()
         {
             CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
-            Status = $"{CurrentTurn.Name}'s turn";
         }
 
         public Board GetOpponentBoard()
@@ -47,7 +46,9 @@ namespace Battleships.Models.Games
 
         public Board GetCurrentBoard()
         {
+            
             return (CurrentTurn == Player1) ? Player1.Board : Player2.Board;
+            
         }
 
         public Player? CheckWinner()
@@ -69,7 +70,7 @@ namespace Battleships.Models.Games
         // Zapisanie stanu aktualnej gry
         public IGameState Save()
         {
-            Console.WriteLine("Current state: " + Status + "saved");
+            Console.WriteLine("Current state: " + Status + " saved");
             return new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.Status, this.Board1, this.Board2);
         }
 
@@ -88,7 +89,7 @@ namespace Battleships.Models.Games
             this.Status = gameState.Status;
             this.Board1 = gameState.Board1;
             this.Board2 = gameState.Board2;
-            Console.WriteLine("State restored:" + this.Status);
+            Console.WriteLine("State restored: " + this.Status);
         }
 
         // Memento
