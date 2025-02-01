@@ -10,13 +10,21 @@ namespace Battleships
 {
     class Program
     {
+        static int player1SymbolOption;
+        static int player2SymbolOption;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Battleships!");
             Console.WriteLine("Please enter the name for Player 1:");
             string player1Name = Console.ReadLine();
+            int player1Wins = CheckPlayerWins(player1Name);
+            DisplayShipSymbolMenu(player1Wins, 1);
+
             Console.WriteLine("Please enter the name for Player 2:");
             string player2Name = Console.ReadLine();
+            int player2Wins = CheckPlayerWins(player2Name);
+            DisplayShipSymbolMenu(player2Wins, 2);
 
 
             // Stworzenie gry i inicjalizacja graczy
@@ -34,7 +42,7 @@ namespace Battleships
             while (game.CheckWinner() == null)
             {
                 Console.WriteLine(game.Status);
-                
+
                 DisplayBoards(game, game.CurrentTurn);
                 OptionsChoice(game);
             }
@@ -54,6 +62,64 @@ namespace Battleships
 
         }
 
+        static int CheckPlayerWins(string playerName)
+        {
+            var hallOfFame = HallOfFame.GetInstance();
+            var playerStats = hallOfFame.GetPlayerStatistics().FirstOrDefault(stats => stats.PlayerID == playerName.GetHashCode());
+            return playerStats?.GamesWon ?? 0;
+        }
+
+        static void DisplayShipSymbolMenu(int wins, int playerId)
+        {
+            string[] symbols = playerId == 1 ? ["@", "&", "!", "+"] : ["*", "#", "<", ">"];
+
+            Console.WriteLine("Choose your ship symbol:");
+            Console.WriteLine($"1. {symbols[0]}");
+            Console.WriteLine($"2. {symbols[1]}");
+            if (wins >= 3)
+            {
+                Console.WriteLine($"3. {symbols[2]}");
+                Console.WriteLine($"4. {symbols[3]}");
+            }
+            else
+            {
+                Console.WriteLine($"3. {symbols[2]} (unlocked after 3 wins)");
+                Console.WriteLine($"4. {symbols[3]} (unlocked after 3 wins)");
+            }
+
+            string? input;
+            bool inputInvalid = true;
+
+            do
+            {
+                input = Console.ReadLine();
+                int symbolOption;
+                if (int.TryParse(input, out symbolOption) && symbolOption >= 1 && symbolOption <= 4)
+                {
+                    if (symbolOption >= 3 && wins < 3)
+                    {
+                        Console.WriteLine("Invalid input. Try again.");
+                    }
+                    else
+                    {
+                        if (playerId == 1) player1SymbolOption = symbolOption;
+                        else player2SymbolOption = symbolOption;
+                        inputInvalid = false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Try again.");
+                }
+            } while (inputInvalid);
+        }
+
+        static void SetPlayerSymbol(int playerId, int symbolOption)
+        {
+            char symbol = playerId == 1 ? Player1ShipDecorator.AvailableSymbols[symbolOption - 1] : Player2ShipDecorator.AvailableSymbols[symbolOption - 1];
+            // Implementacja ustawienia symbolu dla gracza
+        }
+
         static void PlaceShips(Player player, Game game)
         {
             Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
@@ -61,7 +127,7 @@ namespace Battleships
             player.Board.DisplayBoard(true, '.');
 
             PlaceShipForPlayer(game, player, 1, 1);
-          
+
 
 
 
@@ -140,7 +206,7 @@ namespace Battleships
 
             // Stworzenie statku
             IShip ship = shipFactory.CreateShip(player.PlayerId);
-            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship,player.PlayerId) : new Player2ShipDecorator(ship, player.PlayerId);
+            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship, player1SymbolOption) : new Player2ShipDecorator(ship, player2SymbolOption);
 
             return decoratedShip;
         }

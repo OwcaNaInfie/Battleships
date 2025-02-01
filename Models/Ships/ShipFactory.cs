@@ -92,38 +92,22 @@ namespace Battleships.Models.Ships
     // Dekorator statków dla gracza 1
     public class Player1ShipDecorator : ShipDecorator
     {
-        public Player1ShipDecorator(IShip ship, int playerId) : base(ship)
-        {
-            var hallOfFame = HallOfFame.GetInstance();
-            var playerStats = hallOfFame.GetPlayerStatistics().FirstOrDefault(stats => stats.PlayerID == playerId);
+        public static List<char> AvailableSymbols = new List<char> { '@', '&', '!', '+' };
 
-            if (playerStats != null && playerStats.GamesWon >= 3)
-            {
-                DecoratedShip.Symbol = '!';
-            }
-            else
-            {
-                DecoratedShip.Symbol = '@';
-            }
+        public Player1ShipDecorator(IShip ship, int symbolOption) : base(ship)
+        {
+            DecoratedShip.Symbol = AvailableSymbols[symbolOption - 1];
         }
     }
 
     // Dekorator statków dla gracza 2
     public class Player2ShipDecorator : ShipDecorator
     {
-        public Player2ShipDecorator(IShip ship, int playerId) : base(ship)
-        {
-            var hallOfFame = HallOfFame.GetInstance();
-            var playerStats = hallOfFame.GetPlayerStatistics().FirstOrDefault(stats => stats.PlayerID == playerId);
+        public static List<char> AvailableSymbols = new List<char> { '*', '#', '<', '>' };
 
-            if (playerStats != null && playerStats.GamesWon >= 3)
-            {
-                DecoratedShip.Symbol = '+';
-            }
-            else
-            {
-                DecoratedShip.Symbol = '&';
-            }
+        public Player2ShipDecorator(IShip ship, int symbolOption) : base(ship)
+        {
+            DecoratedShip.Symbol = AvailableSymbols[symbolOption - 1];
         }
     }
 
