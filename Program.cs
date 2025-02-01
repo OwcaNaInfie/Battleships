@@ -55,7 +55,10 @@ namespace Battleships
             Player winner = game.CheckWinner();
             if (winner != null)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
+                game.Status = $"\n{winner.Name} WON";
+                history.Push(game.Save());
+                
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"\nCongratulations, {winner.Name}! You are the winner!");
                 Console.ResetColor();
             }
@@ -130,15 +133,15 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
-            // PlaceShipForPlayer(game, player, 1, 1);
+            PlaceShipForPlayer(game, player, 1, 1);
             // PlaceShipForPlayer(game, player, 2, 1);
             // PlaceShipForPlayer(game, player, 3, 1);
             // PlaceShipForPlayer(game, player, 4, 1);
 
-            PlaceShipForPlayer(game, player, 1, 4);
-            PlaceShipForPlayer(game, player, 2, 3);
-            PlaceShipForPlayer(game, player, 3, 2);
-            PlaceShipForPlayer(game, player, 4, 1);
+            // PlaceShipForPlayer(game, player, 1, 4);
+            // PlaceShipForPlayer(game, player, 2, 3);
+            // PlaceShipForPlayer(game, player, 3, 2);
+            // PlaceShipForPlayer(game, player, 4, 1);
           
 
             Console.WriteLine($"{player.Name} has placed all ships.");
@@ -375,6 +378,8 @@ namespace Battleships
             return true;
         }
 
+
+        // Metoda pokazująca historię aktualnej rozgrywki
         private static void DisplayGameHistory()
         {
             Console.WriteLine("Game History:");
