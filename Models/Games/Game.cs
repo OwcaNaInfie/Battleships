@@ -113,6 +113,13 @@ namespace Battleships.Models.Games
                 Board1 = board1;
                 Board2 = board2;
             }
+
+            public override string ToString()
+            {
+                return $"Game Status: {Status}\n" +
+                    $"Player 1 Board: \n{Board1}\n" +
+                    $"Player 2 Board: \n{Board2}\n";
+            }
         }
     }
 }

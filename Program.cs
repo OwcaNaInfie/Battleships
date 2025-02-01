@@ -62,12 +62,12 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
-            // PlaceShipForPlayer(game, player, 1, 1);
+            PlaceShipForPlayer(game, player, 1, 1);
 
-            PlaceShipForPlayer(game, player, 1, 4);
-            PlaceShipForPlayer(game, player, 2, 3);
-            PlaceShipForPlayer(game, player, 3, 2);
-            PlaceShipForPlayer(game, player, 4, 1);
+            // PlaceShipForPlayer(game, player, 1, 4);
+            // PlaceShipForPlayer(game, player, 2, 3);
+            // PlaceShipForPlayer(game, player, 3, 2);
+            // PlaceShipForPlayer(game, player, 4, 1);
           
 
             Console.WriteLine($"{player.Name} has placed all ships.");
@@ -200,7 +200,7 @@ namespace Battleships
         //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
         private static void OptionsChoice(Game game)
         {
-            Console.WriteLine("Select action: A - attack, U - undo, R - redo");
+            Console.WriteLine("Select action: A - attack, U - undo, R - redo, H - view history");
             string? input;
             bool inputInvalid = true;
             bool success;
@@ -236,17 +236,21 @@ namespace Battleships
                             Console.WriteLine("No moves to redo.");
                         }
                         break;
+                    case "H" or "h":
+                        DisplayGameHistory();
+                        Console.WriteLine("Select action: A - attack, U - undo, R - redo, H - view history");
+                        break;
                     default:
                         Console.WriteLine("Invalid input. Try again.");
                         inputInvalid = true;
                         break;
-
                 }
 
             } while (inputInvalid);
 
             game.SwitchTurn();
         }
+
 
         private static bool PlaceShip(int shipSize, int count, int i, Player player, Game game)
         {
@@ -299,5 +303,23 @@ namespace Battleships
             }
             return true;
         }
+
+        private static void DisplayGameHistory()
+        {
+            Console.WriteLine("Game History:");
+
+            var historyList = history.GetHistory();
+            if (historyList.Count == 0)
+            {
+                Console.WriteLine("No game history available.");
+                return;
+            }
+
+            foreach (var state in historyList)
+            {
+                Console.WriteLine(state.ToString());
+            }
+        }
+
     }
 }

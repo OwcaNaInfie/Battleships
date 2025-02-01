@@ -21,5 +21,10 @@ namespace Battleships.Models.Games
             }
             return GameHistory.Pop();
         }
+
+        public List<IGameState> GetHistory()
+        {
+            return GameHistory.Reverse().ToList();
+        }
     }
 }
