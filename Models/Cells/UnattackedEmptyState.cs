@@ -14,7 +14,7 @@ namespace Battleships.Models.Cells
         {
             Console.WriteLine("It's a miss...");
             context.State = new HitEmptyState();
-            StateDescription = "HitEmptyState";
+            StateDescription = "UnattackedEmptyState";
             return true;
         }
 

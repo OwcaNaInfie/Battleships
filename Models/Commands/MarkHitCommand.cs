@@ -12,6 +12,7 @@ namespace Battleships.Models.Commands
         private Board TargetBoard { get; set; }
         private ICellState? LastState { get; set; }
         private Cell? TargetCell { get; set; }
+
         public MarkHitCommand(Board board, int x, int y)
         {
             TargetBoard = board;
@@ -26,6 +27,7 @@ namespace Battleships.Models.Commands
                 Console.WriteLine("These coordinates are not on the board.");
             }
         }
+        
         public bool Execute()
         {
             if (TargetCell != null)

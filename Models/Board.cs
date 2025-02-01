@@ -1,5 +1,6 @@
 ﻿using Battleships.Models.Ships;
 using Battleships.Models.Cells;
+using System.IO;
 
 namespace Battleships.Models
 {
@@ -47,11 +48,13 @@ namespace Battleships.Models
 
 
         // Wizualizacja planszy
-        public void DisplayBoard(bool showShipPlacement = true, char shipSymbol = '.')
+        public string GetBoardString(bool showShipPlacement = true, char shipSymbol = '.')
         {
+            StringWriter sw = new StringWriter();  
+
             for (int y = 0; y < Size; y++)
             {
-                Console.Write(y + " |"); // Wiersze
+                sw.Write(y + " |"); // Rows
 
                 for (int x = 0; x < Size; x++)
                 {
@@ -62,40 +65,74 @@ namespace Battleships.Models
                         case UnattackedOccupiedState:
                             if (showShipPlacement)
                             {
-                                Console.Write($" {shipSymbol} ");
+                                sw.Write($" {shipSymbol} ");
                             }
                             else
                             {
-                                Console.Write(" . ");
+                                sw.Write(" . ");
                             }
                             break;
                         case HitOccupiedState:
-                            Console.Write(" X ");
+                            sw.Write(" X ");
                             break;
                         case UnattackedEmptyState:
-                            Console.Write(" . ");
+                            sw.Write(" . ");
                             break;
                         case HitEmptyState:
-                            Console.Write(" O ");
+                            sw.Write(" O ");
                             break;
                     }
                 }
-                Console.WriteLine();
+                sw.WriteLine();
             }
 
-            Console.Write("   ");
+            sw.Write("   ");
             for (int i = 0; i < Size; i++)
             {
-                Console.Write("---");
+                sw.Write("---");
             }
-            Console.WriteLine();
+            sw.WriteLine();
 
-            Console.Write("   "); // Kolumny
+            sw.Write("   "); // Kolumny
             for (int i = 0; i < Size; i++)
             {
-                Console.Write(" " + i + " ");
+                sw.Write(" " + i + " ");
             }
-            Console.Write("\n\n");
+            sw.Write("\n\n");
+
+           
+            return sw.ToString();
+        }
+
+        // Metoda wyświetlająca planszę
+        public void DisplayBoard(bool showShips, char shipSymbol = '.')
+        {
+            Console.WriteLine(GetBoardString(showShips, shipSymbol)); 
+        }
+
+        // Klon planszy potrzebny do poprawnego działania historii
+        public Board DeepClone()
+        {
+            Board clone = new Board(this.Size);
+
+            clone.Grid = new List<List<Cell>>();
+            for (int x = 0; x < this.Size; x++)
+            {
+                var newRow = new List<Cell>();
+                for (int y = 0; y < this.Size; y++)
+                {
+                    newRow.Add(this.Grid[x][y].CloneCell());
+                }
+                clone.Grid.Add(newRow);
+            }
+
+            clone.Ships = new List<IShip>();
+            foreach (var ship in this.Ships)
+            {
+                clone.Ships.Add(ship.Clone()); 
+            }
+
+            return clone;
         }
 
         // Metoda sprawdzająca czy wszystkie statki zostały zatopione

@@ -13,6 +13,8 @@ namespace Battleships
         static int player1SymbolOption;
         static int player2SymbolOption;
 
+        static CurrentGameHistory history = new CurrentGameHistory();
+        
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Battleships!");
@@ -28,7 +30,7 @@ namespace Battleships
 
 
             // Stworzenie gry i inicjalizacja graczy
-            Game game = new Game(1, player1Name, player2Name);
+            Game game = new Game(player1Name, player2Name);
 
             game.StartGame();
 
@@ -41,6 +43,7 @@ namespace Battleships
             // Rozpoczęcie pętli gry
             while (game.CheckWinner() == null)
             {
+                game.Status = $"\n{game.CurrentTurn.Name}'s turn";
                 Console.WriteLine(game.Status);
 
                 DisplayBoards(game, game.CurrentTurn);
@@ -126,12 +129,16 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
+            // PlaceShipForPlayer(game, player, 1, 1);
+            // PlaceShipForPlayer(game, player, 2, 1);
+            // PlaceShipForPlayer(game, player, 3, 1);
+            // PlaceShipForPlayer(game, player, 4, 1);
+
             PlaceShipForPlayer(game, player, 1, 4);
             PlaceShipForPlayer(game, player, 2, 3);
             PlaceShipForPlayer(game, player, 3, 2);
             PlaceShipForPlayer(game, player, 4, 1);
-
-
+          
 
             Console.WriteLine($"{player.Name} has placed all ships.");
         }
@@ -186,7 +193,6 @@ namespace Battleships
                             Console.WriteLine("Invalid input. Try again.");
                             inputInvalid = true;
                             break;
-
                     }
 
                 } while (inputInvalid);
@@ -239,21 +245,18 @@ namespace Battleships
             Models.Commands.ICommand attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
             bool success = game.CommandInvoker.ExecuteCommand(attack);
 
-            while (!success)
+            if (!success)
             {
                 Console.WriteLine("Invalid operation. Try again.");
-
-                Console.WriteLine("Enter x, y coordinates:");
-                attackCoord = Console.ReadLine().Split();
-                x = int.Parse(attackCoord[0]);
-                y = int.Parse(attackCoord[1]);
-
-                attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
-                success = game.CommandInvoker.ExecuteCommand(attack);
+                Attack(game); 
+            }
+            else
+            {
+                history.Push(game.Save());
             }
 
         }
-
+ 
         private static void DisplayBoards(Game game, Player currentPlayer)
         {
             Console.WriteLine("Your ships' status:");
@@ -267,7 +270,7 @@ namespace Battleships
         //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
         private static void OptionsChoice(Game game)
         {
-            Console.WriteLine("Select action: A - attack, U - undo, R - redo");
+            Console.WriteLine("Select action: A - attack, U - undo, R - redo, H - view history");
             string? input;
             bool inputInvalid = true;
             bool success;
@@ -303,17 +306,21 @@ namespace Battleships
                             Console.WriteLine("No moves to redo.");
                         }
                         break;
+                    case "H" or "h":
+                        DisplayGameHistory();
+                        Console.WriteLine("Select action: A - attack, U - undo, R - redo, H - view history");
+                        break;
                     default:
                         Console.WriteLine("Invalid input. Try again.");
                         inputInvalid = true;
                         break;
-
                 }
 
             } while (inputInvalid);
 
             game.SwitchTurn();
         }
+
 
         private static bool PlaceShip(int shipSize, int count, int i, Player player, Game game)
         {
@@ -365,6 +372,23 @@ namespace Battleships
                 }
             }
             return true;
+        }
+
+        private static void DisplayGameHistory()
+        {
+            Console.WriteLine("Game History:");
+
+            var historyList = history.GetHistory();
+            if (historyList.Count == 0)
+            {
+                Console.WriteLine("No game history available.");
+                return;
+            }
+
+            foreach (var state in historyList)
+            {
+                Console.WriteLine(state.ToString());
+            }
         }
 
     }

@@ -10,6 +10,7 @@ namespace Battleships.Models.Ships
         int Hits { get; set; }
         bool IsSunk();
         void ChangeTheme();
+        IShip Clone();
     }
 
 }
