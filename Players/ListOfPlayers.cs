@@ -1,0 +1,24 @@
+namespace Battleships.Players
+{
+    public class ListOfPlayers
+    {
+        private List<Player> Players;
+
+        public ListOfPlayers()
+        {
+            this.Players = new List<Player>();
+        }
+
+        // public void AddPlayer(Player player)
+        // {
+            
+        //     Players.Add(player);
+        // }
+
+        public List<Player> GetPlayers()
+        {
+            return Players;
+        }
+
+    }
+}

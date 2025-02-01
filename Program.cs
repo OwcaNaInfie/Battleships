@@ -1,9 +1,10 @@
 ﻿using System;
-using Battleships.Models;
-using Battleships.Models.Ships;
-using Battleships.Models.Games;
+using Battleships;
+using Battleships.Ships;
+using Battleships.Players;
+using Battleships.Games;
 using System.Windows.Input;
-using Battleships.Models.Commands;
+using Battleships.Commands;
 using System.Numerics;
 
 namespace Battleships
@@ -242,7 +243,7 @@ namespace Battleships
             int x = int.Parse(attackCoord[0]);
             int y = int.Parse(attackCoord[1]);
 
-            Models.Commands.ICommand attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
+            Commands.ICommand attack = new MarkHitCommand(game.GetOpponentBoard(), x, y);
             bool success = game.CommandInvoker.ExecuteCommand(attack);
 
             if (!success)
@@ -361,7 +362,7 @@ namespace Battleships
                 IShip ship = CreateShip(player, shipSize);
 
                 // Ułożenie statku na planszy
-                Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
+                Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
                 isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
                 player.Board.DisplayBoard(true, ship.Symbol);
                 if (!isPlaced)
