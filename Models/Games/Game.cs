@@ -54,10 +54,12 @@ namespace Battleships.Models.Games
         {
             if (Player1.Board.AreAllShipsSunk())
             {
+                Status = $"Game finished. {Player2.Name} won";
                 return Player2; // Gracz 2 wygrał
             }
             if (Player2.Board.AreAllShipsSunk())
             {
+                Status = $"Game finished. {Player1.Name} won";
                 return Player1; // Gracz 1 wygrał
             }
             return null; // Nie ma wygranego
