@@ -87,6 +87,11 @@ namespace Battleships.Models.Ships
         {
             DecoratedShip.ChangeTheme();
         }
+
+        public virtual IShip Clone()
+        {
+            return DecoratedShip.Clone();
+        }
     }
    
     // Dekorator statków dla gracza 1
@@ -233,13 +238,27 @@ namespace Battleships.Models.Ships
         public List<Cell> Positions { get; set; }
         public int Hits { get; set; }
         public char Symbol { get; set; }
+
         public bool IsSunk()
         {
             return Hits >= Size;
         }
+        
         public void ChangeTheme()
         {
 
+        }
+        
+        public IShip Clone()
+        {
+            return new Ship
+            {
+                Name = this.Name,
+                Size = this.Size,
+                Positions = this.Positions,
+                Hits = this.Hits,
+                Symbol = this.Symbol
+            };
         }
     }
 

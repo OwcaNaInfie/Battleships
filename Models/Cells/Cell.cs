@@ -44,6 +44,14 @@ namespace Battleships.Models.Cells
         {
             return "State: " + State.ToString();
         }
-        
+
+        public Cell CloneCell()
+        {
+            return new Cell
+            {
+                State = this.State,
+            };
+        }
+
     }
 }

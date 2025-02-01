@@ -62,7 +62,7 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
-            PlaceShipForPlayer(game, player, 1, 1);
+            PlaceShipForPlayer(game, player, 1, 4);
 
             // PlaceShipForPlayer(game, player, 1, 4);
             // PlaceShipForPlayer(game, player, 2, 3);

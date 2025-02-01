@@ -71,7 +71,7 @@ namespace Battleships.Models.Games
         public IGameState Save()
         {
             Console.WriteLine("Current state: " + Status + " saved");
-            return new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.Status, this.Board1, this.Board2);
+            return new GameState(this.GameId, this.Player1, this.Player2, this.CurrentTurn, this.Status, this.Player1.Board.DeepClone(), this.Player2.Board.DeepClone());
         }
 
         // Zwrócenie stanu aktulnej gry
@@ -117,8 +117,8 @@ namespace Battleships.Models.Games
             public override string ToString()
             {
                 return $"Game Status: {Status}\n" +
-                    $"Player 1 Board: \n{Board1}\n" +
-                    $"Player 2 Board: \n{Board2}\n";
+                    $"{Player1.Name}'s Board: \n{Board1.GetBoardString(true)}\n" +
+                    $"{Player2.Name}'s Board: \n{Board2.GetBoardString(true)}\n";
             }
         }
     }
