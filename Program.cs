@@ -6,13 +6,14 @@ using Battleships.Games;
 using System.Windows.Input;
 using Battleships.Commands;
 using System.Numerics;
+using System.Reflection;
 
 namespace Battleships
 {
     class Program
     {
-        static int player1SymbolOption;
-        static int player2SymbolOption;
+        internal static int player1SymbolOption;
+        internal static int player2SymbolOption;
 
         static CurrentGameHistory history = new CurrentGameHistory();
         
@@ -37,8 +38,8 @@ namespace Battleships
 
             // Każdy gracz stawia swoje statki
             PlaceShips(game.Player1, game);
+            game.CommandInvoker.ClearHistory();
             PlaceShips(game.Player2, game);
-
             game.CommandInvoker.ClearHistory();
 
             // Rozpoczęcie pętli gry
@@ -121,11 +122,6 @@ namespace Battleships
             } while (inputInvalid);
         }
 
-        static void SetPlayerSymbol(int playerId, int symbolOption)
-        {
-            char symbol = playerId == 1 ? Player1ShipDecorator.AvailableSymbols[symbolOption - 1] : Player2ShipDecorator.AvailableSymbols[symbolOption - 1];
-            // Implementacja ustawienia symbolu dla gracza
-        }
 
         static void PlaceShips(Player player, Game game)
         {
@@ -133,40 +129,64 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
-            PlaceShipForPlayer(game, player, 1, 1);
-            // PlaceShipForPlayer(game, player, 2, 1);
-            // PlaceShipForPlayer(game, player, 3, 1);
-            // PlaceShipForPlayer(game, player, 4, 1);
+            Dictionary<int, int> shipQuantities = DefineShipQuantities();
 
-            // PlaceShipForPlayer(game, player, 1, 4);
-            // PlaceShipForPlayer(game, player, 2, 3);
-            // PlaceShipForPlayer(game, player, 3, 2);
-            // PlaceShipForPlayer(game, player, 4, 1);
-          
+            PlaceShipForPlayer(game, player, shipQuantities);
+
 
             Console.WriteLine($"{player.Name} has placed all ships.");
         }
 
-        // Metoda pozwalająca graczowi wykonać akcję podczas stawiania statków
-        static void PlaceShipForPlayer(Game game, Player player, int shipSize, int count)
+
+        static Dictionary<int, int> DefineShipQuantities()
         {
-            for (int i = 0; i < count; i++)
+            // Licznosci statkow danego typu
+            int oneMast = 3;
+            int twoMast = 2;
+            //int threeMast = 2;
+            //int fourMast = 1;
+
+            return new Dictionary<int, int>
             {
-                Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
+                { 1, oneMast },
+                { 2, twoMast },
+                //{ 3, threeMast },
+                //{ 4, fourMast }
+            };
+        }
+
+        // Metoda pozwalająca graczowi wykonać akcję podczas stawiania statków
+        static void PlaceShipForPlayer(Game game, Player player, Dictionary<int, int> shipQuantities)
+        {
+            int sum = CalculateShipSum(shipQuantities);
+
+            int shipCount = 0;
+
+            while (shipCount < sum)
+            {
                 string? input;
                 bool inputInvalid = true;
                 bool success;
 
                 do
                 {
+                    Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
                     input = Console.ReadLine();
+
                     switch (input)
                     {
                         case "P" or "p":
-                            success = PlaceShip(shipSize, count, i, player, game);
+
+                            int shipSize = FindShipSize(shipQuantities, shipCount);
+                            int shipTotal = shipQuantities[shipSize];
+                            int shipRelativeCount = FindRelativeShipCount(shipQuantities, shipCount);
+
+                            success = PlaceShip(shipSize, shipTotal, shipRelativeCount, player, game);
+                            //player.Board.DisplayBoard(true, '#');
                             if (success)
                             {
                                 inputInvalid = false;
+                                shipCount++;
                             }
                             break;
                         case "U" or "u":
@@ -174,8 +194,7 @@ namespace Battleships
                             if (success)
                             {
                                 inputInvalid = false;
-                                if (i > 0) i -= 2;
-                                CancelShipPlacement(player, shipSize);
+                                shipCount--;
                             }
                             else
                             {
@@ -187,6 +206,7 @@ namespace Battleships
                             if (success)
                             {
                                 inputInvalid = false;
+                                shipCount++;
                             }
                             else
                             {
@@ -197,43 +217,12 @@ namespace Battleships
                             Console.WriteLine("Invalid input. Try again.");
                             inputInvalid = true;
                             break;
+
                     }
 
                 } while (inputInvalid);
 
             }
-            game.CommandInvoker.ClearHistory();
-        }
-
-        static IShip CreateShip(Player player, int shipSize)
-        {
-            ShipFactory shipFactory = shipSize switch
-            {
-                1 => OneMastFactory.Instance,
-                2 => TwoMastFactory.Instance,
-                3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance,
-                _ => throw new ArgumentException("Invalid ship size")
-            };
-
-            // Stworzenie statku
-            IShip ship = shipFactory.CreateShip(player.PlayerId);
-            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship, player1SymbolOption) : new Player2ShipDecorator(ship, player2SymbolOption);
-
-            return decoratedShip;
-        }
-
-        static void CancelShipPlacement(Player player, int shipSize)
-        {
-            ShipFactory shipFactory = shipSize switch
-            {
-                1 => OneMastFactory.Instance,
-                2 => TwoMastFactory.Instance,
-                3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance,
-                _ => throw new ArgumentException("Invalid ship size")
-            };
-            shipFactory.CancelShipPlacement(player.PlayerId);
         }
 
         // Metoda wykonująca czynność ataku
@@ -325,57 +314,35 @@ namespace Battleships
             game.SwitchTurn();
         }
 
-
         private static bool PlaceShip(int shipSize, int count, int i, Player player, Game game)
         {
-            bool isPlaced = false;
-            while (!isPlaced)
+
+            Console.WriteLine($"Place your {shipSize}-mast ship (Ship {i + 1} of {count}).");
+            Console.WriteLine("Enter the start coordinate (x1 y1): ");
+
+            int x1, y1, x2 = 0, y2 = 0;
+            string[] startCoord = Console.ReadLine().Split();
+            x1 = int.Parse(startCoord[0]);
+            y1 = int.Parse(startCoord[1]);
+
+            if (shipSize > 1)
             {
-                Console.WriteLine($"Place your {shipSize}-mast ship (Ship {i + 1} of {count}).");
-                Console.WriteLine("Enter the start coordinate (x1 y1): ");
+                Console.WriteLine("Enter the end coordinate (x2 y2): ");
+                string[] endCoord = Console.ReadLine().Split();
+                x2 = int.Parse(endCoord[0]);
+                y2 = int.Parse(endCoord[1]);
 
-                int x1, y1, x2 = 0, y2 = 0;
-                string[] startCoord = Console.ReadLine().Split();
-                x1 = int.Parse(startCoord[0]);
-                y1 = int.Parse(startCoord[1]);
-
-                if (shipSize > 1)
-                {
-                    Console.WriteLine("Enter the end coordinate (x2 y2): ");
-                    string[] endCoord = Console.ReadLine().Split();
-                    x2 = int.Parse(endCoord[0]);
-                    y2 = int.Parse(endCoord[1]);
-
-                    // Obliczenie długości statku
-                    int length = (x1 == x2) ? Math.Abs(y2 - y1) + 1 : (y1 == y2) ? Math.Abs(x2 - x1) + 1 : 0;
-                    if (length != shipSize)
-                    {
-                        Console.WriteLine($"The length of the ship doesn't match the required size. The ship size is {shipSize}.");
-                        return false;
-                    }
-                }
-                else
-                {
-                    // Dla 1-masztowców pary współrzędnych są takie same
-                    x2 = x1;
-                    y2 = y1;
-                }
-
-                // Stworzenie statku
-                IShip ship = CreateShip(player, shipSize);
-
-                // Ułożenie statku na planszy
-                Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
-                isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
-                player.Board.DisplayBoard(true, ship.Symbol);
-                if (!isPlaced)
-                {
-                    Console.WriteLine("Invalid placement. The ship cannot be placed here.");
-                    CancelShipPlacement(player, shipSize);
-                    return false;
-                }
             }
-            return true;
+            else
+            {
+                // Dla 1-masztowców pary współrzędnych są takie same
+                x2 = x1;
+                y2 = y1;
+            }
+            // Ułożenie statku na planszy
+            Commands.ICommand placeShip = new PlaceShipCommand(player, shipSize, x1, y1, x2, y2);
+            return game.CommandInvoker.ExecuteCommand(placeShip);
+
         }
 
 
@@ -395,6 +362,49 @@ namespace Battleships
             {
                 Console.WriteLine(state.ToString());
             }
+        }
+
+
+        // Calculates the total number of ships to be placed
+        static int CalculateShipSum(Dictionary<int, int> shipQuantities)
+        {
+            int sum = 0;
+
+            foreach (KeyValuePair<int, int> pair in shipQuantities)
+            {
+                sum += pair.Value;
+            }
+
+            return sum;
+        }
+
+        // Finds the ship size of the n-th ship being placed (n = shipCount)
+        static int FindShipSize(Dictionary<int, int> shipQuantities, int shipCount)
+        {
+            int sum = 0;
+
+            foreach (KeyValuePair<int, int> pair in shipQuantities)
+            {
+                sum += pair.Value;
+                if (sum > shipCount) return pair.Key;
+            }
+
+            return -1;
+        }
+
+        // Returns the relative number of the ship being placed
+        // e. g. if the ship is the 3rd 2-mast ship to be placed, this method will return 3
+        static int FindRelativeShipCount(Dictionary<int, int> shipQuantities, int shipCount)
+        {
+            int sum = 0;
+
+            foreach (KeyValuePair<int, int> pair in shipQuantities)
+            {
+                sum += pair.Value;
+                if (sum > shipCount) return (shipCount - (sum - pair.Value));
+            }
+
+            return -1;
         }
 
     }
