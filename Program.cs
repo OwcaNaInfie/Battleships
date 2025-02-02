@@ -121,14 +121,15 @@ namespace Battleships
 
             while (shipCount < sum)
             {
-                Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
                 string? input;
                 bool inputInvalid = true;
                 bool success;
 
                 do
                 {
+                    Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
                     input = Console.ReadLine();
+
                     switch (input)
                     {
                         case "P" or "p":
