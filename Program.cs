@@ -34,8 +34,8 @@ namespace Battleships
             while (game.CheckWinner() == null)
             {
                 Console.WriteLine(game.Status);
-                DisplayBoards(game, '.');
-                OptionsChoice(game);
+                DisplayBoards(game, '#');
+                AttackChoices(game);
             }
 
             // Powiadom o wygranym graczu
@@ -59,53 +59,79 @@ namespace Battleships
 
             player.Board.DisplayBoard(true, '.');
 
+            Dictionary<int, int> shipQuantities = DefineShipQuantities();
 
-            PlaceShipForPlayer(game, player, 4, 3, 2, 1);
+            PlaceShipForPlayer(game, player, shipQuantities);
             game.CommandInvoker.ClearHistory();
 
 
             Console.WriteLine($"{player.Name} has placed all ships.");
         }
 
-        static void FillSizeArray(List<int> sizeArray, Dictionary<int, int> shipTypeCount)
+        static Dictionary<int, int> DefineShipQuantities()
         {
-            for (int i = 1; i <= shipTypeCount.Count; i++)
-            {
-                for (int j = 0; j < shipTypeCount[i]; j++)
-                {
-                    sizeArray.Add(i);
-                }
-            }
-        }
+            // Licznosci statkow danego typu
+            int oneMast = 3;
+            int twoMast = 2;
+            //int threeMast = 2;
+            //int fourMast = 1;
 
-        static int CalculateShipsNow(List<int> sizeArray, int shipCount)
-        {
-            int lastIndex = 0;
-
-            if (sizeArray[shipCount] != 1)
-            {
-                lastIndex = sizeArray.FindLastIndex(x => x == sizeArray[shipCount] - 1) + 1;
-            }
-
-            return shipCount - lastIndex;
-        }
-
-        static void PlaceShipForPlayer(Game game, Player player, int oneMast, int twoMast, int threeMast, int fourMast)
-        {
-            int sum = oneMast + twoMast + threeMast + fourMast;
-            int shipCount = 0;
-
-            List<int> sizeArray = new();
-
-            Dictionary<int, int> shipQuantities = new Dictionary<int, int>
+            return new Dictionary<int, int>
             {
                 { 1, oneMast },
                 { 2, twoMast },
-                { 3, threeMast },
-                { 4, fourMast }
+                //{ 3, threeMast },
+                //{ 4, fourMast }
             };
+        }
 
-            FillSizeArray(sizeArray, shipQuantities);
+        // Calculates the total number of ships to be placed
+        static int CalculateShipSum(Dictionary<int, int> shipQuantities)
+        {
+            int sum = 0;
+
+            foreach (KeyValuePair<int, int> pair in shipQuantities)
+            {
+                sum += pair.Value;
+            }
+
+            return sum;
+        }
+
+        // Finds the ship size of the n-th ship being placed (n = shipCount)
+        static int FindShipSize(Dictionary<int, int> shipQuantities, int shipCount) 
+        {
+            int sum = 0;
+
+            foreach (KeyValuePair<int, int> pair in shipQuantities)
+            {
+                sum += pair.Value;
+                if (sum > shipCount) return pair.Key;
+            }
+
+            return -1;
+        }
+
+        // Returns the relative number of the ship being placed
+        // e. g. if the ship is the 3rd 2-mast ship to be placed, this method will return 3
+        static int FindRelativeShipCount(Dictionary<int, int> shipQuantities, int shipCount)
+        {
+            int sum = 0;
+
+            foreach (KeyValuePair<int, int> pair in shipQuantities)
+            {
+                sum += pair.Value;
+                if (sum > shipCount) return (shipCount - (sum - pair.Value));
+            }
+
+            return -1;
+        }
+
+        static void PlaceShipForPlayer(Game game, Player player, Dictionary<int, int> shipQuantities)
+        {
+            int sum = CalculateShipSum(shipQuantities);
+
+            int shipCount = 0;
 
             while (shipCount < sum)
             {
@@ -121,11 +147,12 @@ namespace Battleships
                     switch (input)
                     {
                         case "P" or "p":
-                            int shipSize = sizeArray[shipCount];
-                            int shipTotal = shipQuantities[shipSize];
-                            int shipNow = CalculateShipsNow(sizeArray, shipCount);
 
-                            success = PlaceShip(shipSize, shipTotal, shipNow, player, game);
+                            int shipSize = FindShipSize(shipQuantities, shipCount);
+                            int shipTotal = shipQuantities[ shipSize ];
+                            int shipRelativeCount = FindRelativeShipCount(shipQuantities, shipCount);
+
+                            success = PlaceShip(shipSize, shipTotal, shipRelativeCount, player, game);
                             player.Board.DisplayBoard(true, '#');
                             if (success)
                             {
@@ -211,7 +238,7 @@ namespace Battleships
         }
 
         //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
-        private static void OptionsChoice(Game game)
+        private static void AttackChoices(Game game)
         {
             Console.WriteLine("Select action: A - attack, U - undo, R - redo");
             string? input;
