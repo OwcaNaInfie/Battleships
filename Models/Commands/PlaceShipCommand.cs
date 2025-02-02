@@ -18,9 +18,9 @@ namespace Battleships.Models.Commands
         private int StartY { get; set; }
         private int EndX { get; set; }
         private int EndY { get; set; }
-        public PlaceShipCommand(Board board, Player player, int shipSize, int startX, int startY, int endX, int endY)
+        public PlaceShipCommand(Player player, int shipSize, int startX, int startY, int endX, int endY)
         {
-            Board = board;
+            Board = player.Board;
             Player = player;
             Ship = CreateShip(player, shipSize);
             StartX = startX;
@@ -34,6 +34,7 @@ namespace Battleships.Models.Commands
             if (!Board.IsInBounds(StartX, StartY) && !Board.IsInBounds(EndX, EndY))
             {
                 CancelShipPlacement(Player, Ship.Size);
+                Console.WriteLine("No ship can be placed outside the board.");
                 return false;
             }
 
