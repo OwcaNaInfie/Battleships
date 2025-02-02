@@ -12,15 +12,17 @@ namespace Battleships.Models.Commands
     public class PlaceShipCommand : ICommand
     {
         private Board Board { get; set; }
+        private Player Player { get; set; }
         private IShip Ship { get; set; }
         private int StartX {  get; set; }
         private int StartY { get; set; }
         private int EndX { get; set; }
         private int EndY { get; set; }
-        public PlaceShipCommand(Board board, IShip ship, int startX, int startY, int endX, int endY)
+        public PlaceShipCommand(Board board, Player player, int shipSize, int startX, int startY, int endX, int endY)
         {
             Board = board;
-            Ship = ship;
+            Player = player;
+            Ship = CreateShip(player, shipSize);
             StartX = startX;
             StartY = startY;
             EndX = endX;
@@ -31,6 +33,7 @@ namespace Battleships.Models.Commands
 
             if (!Board.IsInBounds(StartX, StartY) && !Board.IsInBounds(EndX, EndY))
             {
+                CancelShipPlacement(Player, Ship.Size);
                 return false;
             }
 
@@ -51,6 +54,7 @@ namespace Battleships.Models.Commands
             if (length != Ship.Size)
             {
                 Console.WriteLine($"The length of the ship doesn't match the required size. The ship size is {Ship.Size}.");
+                CancelShipPlacement(Player, Ship.Size);
                 return false;
             }
 
@@ -74,6 +78,7 @@ namespace Battleships.Models.Commands
                 if (cell.State is UnattackedOccupiedState)
                 {
                     Console.WriteLine($"Error: Cell at ({x},{y}) is already occupied.");
+                    CancelShipPlacement(Player, Ship.Size);
                     return false; // Jeśli komórka jest już zajęta - nieodpowiednie ułożenie statku
                 }
 
@@ -83,6 +88,7 @@ namespace Battleships.Models.Commands
 
             // Dodanie statku do listy
             Board.Ships.Add(Ship);
+
             return true;
         }
 
@@ -109,6 +115,41 @@ namespace Battleships.Models.Commands
 
             // Usunięcie statku z listy postawionych statków
             Board.Ships.Remove(Ship);
+            // Zmniejszenie liczby statków danego typu w liczniku w fabryce
+            CancelShipPlacement(Player, Ship.Size);
+        }
+
+        static IShip CreateShip(Player player, int shipSize)
+        {
+            ShipFactory shipFactory = shipSize switch
+            {
+                1 => OneMastFactory.Instance,
+                2 => TwoMastFactory.Instance,
+                3 => ThreeMastFactory.Instance,
+                4 => FourMastFactory.Instance,
+                _ => throw new ArgumentException("Invalid ship size")
+            };
+
+            // Stworzenie statku
+            IShip ship = shipFactory.CreateShip(player.PlayerId);
+            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship, player.PlayerId) : new Player2ShipDecorator(ship, player.PlayerId);
+
+            return decoratedShip;
+        }
+
+        static void CancelShipPlacement(Player player, int shipSize)
+        {
+            ShipFactory shipFactory = shipSize switch
+            {
+                1 => OneMastFactory.Instance,
+                2 => TwoMastFactory.Instance,
+                3 => ThreeMastFactory.Instance,
+                4 => FourMastFactory.Instance,
+                _ => throw new ArgumentException("Invalid ship size")
+            };
+            shipFactory.CancelShipPlacement(player.PlayerId);
         }
     }
+
+
 }

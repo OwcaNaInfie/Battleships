@@ -58,12 +58,7 @@ namespace Battleships
             Console.WriteLine($"{player.Name}, it's time to place your ships!\n");
 
             player.Board.DisplayBoard(true, '.');
-            /*
-            PlaceShipForPlayer(game, player, 1, 4);
-            PlaceShipForPlayer(game, player, 2, 3);
-            PlaceShipForPlayer(game, player, 3, 2);
-            PlaceShipForPlayer(game, player, 4, 1);
-            */
+
             PlaceShipForPlayer(game, player, 4, 3, 2, 1);
             game.CommandInvoker.ClearHistory();
 
@@ -101,10 +96,8 @@ namespace Battleships
 
             if (sizeArray[shipCount] != 1)
             {
-                lastIndex = sizeArray.FindLastIndex(x => x == sizeArray[shipCount] - 1);
+                lastIndex = sizeArray.FindLastIndex(x => x == sizeArray[shipCount] - 1) + 1;
             }
-
-            int currentIndex = sizeArray[shipCount];
 
             return shipCount - lastIndex;
         }
@@ -154,9 +147,9 @@ namespace Battleships
                             success = game.CommandInvoker.Undo();
                             if (success)
                             {
+                                player.Board.DisplayBoard(true, '#');
                                 inputInvalid = false;
                                 shipCount--;
-                                CancelShipPlacement(player, sizeArray[shipCount]);
                             }
                             else
                             {
@@ -167,6 +160,7 @@ namespace Battleships
                             success = game.CommandInvoker.Redo();
                             if (success)
                             {
+                                player.Board.DisplayBoard(true, '#');//, ship.Symbol);
                                 inputInvalid = false;
                                 shipCount++;
                             }
@@ -187,94 +181,6 @@ namespace Battleships
             } 
         }
 
-        // Metoda pozwalająca graczowi wykonać akcję podczas stawiania statków
-        static void PlaceShipForPlayer(Game game, Player player, int shipSize, int count)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                Console.WriteLine("Select action: P - place ship, U - undo, R - redo");
-                string? input;
-                bool inputInvalid = true;
-                bool success;
-
-                do
-                {
-                    input = Console.ReadLine();
-                    switch (input)
-                    {
-                        case "P" or "p":
-                            success = PlaceShip(shipSize, count, i, player, game);
-                            if (success)
-                            {
-                                inputInvalid = false;
-                            }
-                            break;
-                        case "U" or "u":
-                            success = game.CommandInvoker.Undo();
-                            if (success)
-                            {
-                                inputInvalid = false;
-                                if (i > 0) i -= 2;
-                                CancelShipPlacement(player, shipSize);
-                            }
-                            else
-                            {
-                                Console.WriteLine("No moves to undo.");
-                            }
-                            break;
-                        case "R" or "r":
-                            success = game.CommandInvoker.Redo();
-                            if (success)
-                            {
-                                inputInvalid = false;
-                            }
-                            else
-                            {
-                                Console.WriteLine("No moves to redo.");
-                            }
-                            break;
-                        default:
-                            Console.WriteLine("Invalid input. Try again.");
-                            inputInvalid = true;
-                            break;
-
-                    }
-
-                } while (inputInvalid);
-
-            }
-        }
-
-        static IShip CreateShip(Player player, int shipSize)
-        {
-            ShipFactory shipFactory = shipSize switch
-            {
-                1 => OneMastFactory.Instance,
-                2 => TwoMastFactory.Instance,
-                3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance,
-                _ => throw new ArgumentException("Invalid ship size")
-            };
-
-            // Stworzenie statku
-            IShip ship = shipFactory.CreateShip(player.PlayerId);
-            IShip decoratedShip = player.PlayerId == 1 ? new Player1ShipDecorator(ship,player.PlayerId) : new Player2ShipDecorator(ship, player.PlayerId);
-
-            return decoratedShip;
-        }
-
-        static void CancelShipPlacement(Player player, int shipSize)
-        {
-            ShipFactory shipFactory = shipSize switch
-            {
-                1 => OneMastFactory.Instance,
-                2 => TwoMastFactory.Instance,
-                3 => ThreeMastFactory.Instance,
-                4 => FourMastFactory.Instance,
-                _ => throw new ArgumentException("Invalid ship size")
-            };
-            shipFactory.CancelShipPlacement(player.PlayerId);
-        }
 
         // Metoda wykonująca czynność ataku
         static void Attack(Game game)
@@ -304,15 +210,15 @@ namespace Battleships
 
         }
 
-     private static void DisplayBoards(Game game, char shipSymbol)
-{
-    Console.WriteLine("Your ships' status:");
-    game.GetCurrentBoard().DisplayBoard(true, shipSymbol); // Plansza gracza z widocznymi statkami
+        private static void DisplayBoards(Game game, char shipSymbol)
+        {
+            Console.WriteLine("Your ships' status:");
+            game.GetCurrentBoard().DisplayBoard(true, shipSymbol); // Plansza gracza z widocznymi statkami
 
-    Console.WriteLine("Attacks status:");
-    Board opponentBoard = game.GetOpponentBoard();
-    opponentBoard.DisplayBoard(false); // Plansza przeciwnika z widocznymi atakami
-}
+            Console.WriteLine("Attacks status:");
+            Board opponentBoard = game.GetOpponentBoard();
+            opponentBoard.DisplayBoard(false); // Plansza przeciwnika z widocznymi atakami
+        }
 
         //Metoda wyświetlająca czynności możliwe podczas rozpoczętej rozgrywki
         private static void OptionsChoice(Game game)
@@ -400,17 +306,14 @@ namespace Battleships
                     y2 = y1;
                 }
 
-                // Stworzenie statku
-                IShip ship = CreateShip(player, shipSize);
-
                 // Ułożenie statku na planszy
-                Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, ship, x1, y1, x2, y2);
+                Models.Commands.ICommand placeShip = new PlaceShipCommand(player.Board, player, shipSize, x1, y1, x2, y2);
                 isPlaced = game.CommandInvoker.ExecuteCommand(placeShip);
-                player.Board.DisplayBoard(true, ship.Symbol);
+                player.Board.DisplayBoard(true, '#');//, ship.Symbol);
+
                 if (!isPlaced)
                 {
                     Console.WriteLine("Invalid placement. The ship cannot be placed here.");
-                    CancelShipPlacement(player, shipSize);
                     return false;
                 }
             }
