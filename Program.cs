@@ -59,7 +59,7 @@ namespace Battleships
                 game.Status = $"\n{winner.Name} WON";
                 history.Push(game.Save());
                 
-                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"\nCongratulations, {winner.Name}! You are the winner!");
                 Console.ResetColor();
             }
@@ -141,17 +141,17 @@ namespace Battleships
         static Dictionary<int, int> DefineShipQuantities()
         {
             // Licznosci statkow danego typu
-            int oneMast = 3;
-            int twoMast = 2;
-            //int threeMast = 2;
-            //int fourMast = 1;
+            int oneMast = 4;
+            int twoMast = 3;
+            int threeMast = 2;
+            int fourMast = 1;
 
             return new Dictionary<int, int>
             {
                 { 1, oneMast },
                 { 2, twoMast },
-                //{ 3, threeMast },
-                //{ 4, fourMast }
+                { 3, threeMast },
+                { 4, fourMast }
             };
         }
 

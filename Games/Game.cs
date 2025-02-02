@@ -50,9 +50,7 @@ namespace Battleships.Games
 
         public Board GetCurrentBoard()
         {
-            
             return (CurrentTurn == Player1) ? Player1.Board : Player2.Board;
-            
         }
 
         public Player? CheckWinner()
